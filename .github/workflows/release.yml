@@ -1,10 +1,17 @@
 name: Release
 
-# Publishes the production image to GHCR when a version tag (v1.2.3) is pushed.
+# Publishes the production image to GHCR when a version tag (v1.2.3) is pushed, or on demand from the
+# Actions tab ("Run workflow", enter the version without the leading v, for example 0.1.0).
 on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Image version tag without the leading v (for example 0.1.0)'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -37,7 +44,8 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest
+            type=raw,value=${{ inputs.version }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=latest,enable=${{ !contains(github.ref_name, '-') }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
