@@ -19,5 +19,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::post('/domains/freemail', [DomainController::class, 'storeFreemail'])->name('domains.freemail.store');
     Route::delete('/domains/freemail/{blockedDomain}', [DomainController::class, 'destroyFreemail'])->name('domains.freemail.destroy');
 
+    Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
     Route::patch('/settings', [SettingController::class, 'update'])->name('settings.update');
 });

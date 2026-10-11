@@ -17,6 +17,8 @@ return [
 
     'inbox_title' => 'Inbox',
     'pin_valid_until' => 'PIN valid until :time, :minutes min left',
+    'pin_valid_until_days_one' => 'PIN valid until :time, :count day left',
+    'pin_valid_until_days_other' => 'PIN valid until :time, :count days left',
     'messages_none' => 'No mails yet.',
     'messages_one' => '1 mail, the oldest is deleted after :days days',
     'messages_many' => ':count mails, the oldest are deleted after :days days',

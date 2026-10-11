@@ -17,6 +17,8 @@ return [
 
     'inbox_title' => 'Posteingang',
     'pin_valid_until' => 'PIN gültig bis :time, noch :minutes Min.',
+    'pin_valid_until_days_one' => 'PIN gültig bis :time, noch :count Tag',
+    'pin_valid_until_days_other' => 'PIN gültig bis :time, noch :count Tage',
     'messages_none' => 'Noch keine Mails.',
     'messages_one' => '1 Mail, die älteste wird nach :days Tagen gelöscht',
     'messages_many' => ':count Mails, die ältesten werden nach :days Tagen gelöscht',

@@ -3,7 +3,8 @@
 return [
     'nav' => [
         'users' => 'Lehrer:innen-Konten',
-        'domains' => 'Domains',
+        'domains' => 'Schul-Domains',
+        'settings' => 'Einstellungen',
     ],
 
     'status' => [
@@ -31,7 +32,6 @@ return [
         'col_limit' => 'Adresslimit',
         'col_created' => 'Angelegt',
         'col_actions' => 'Aktionen',
-        'default_limit' => 'Standard (:n)',
         'limit_label' => 'Eigenes Adresslimit, leer = Standard',
         'empty' => 'Noch keine Lehrer:innen angelegt.',
         'approve' => 'Freigeben',
@@ -55,7 +55,7 @@ return [
 
     'domains' => [
         'organization_title' => 'Schul-Domains',
-        'organization_hint' => 'Registrierungen mit diesen Domains werden automatisch freigegeben.',
+        'organization_hint' => 'E-Mail-Domains von Lehrer:innen, zum Beispiel schule.example.org. Wer sich mit so einer Adresse registriert, wird sofort freigeschaltet. Mit den erlaubten Absendern von Mails hat das nichts zu tun, die pflegen die Lehrer:innen selbst.',
         'freemail_title' => 'Gesperrte Domains',
         'freemail_hint' => 'Freemail- und Wegwerf-Domains, für die keine Registrierung möglich ist.',
         'domain' => 'Domain',

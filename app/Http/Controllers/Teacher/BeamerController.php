@@ -8,9 +8,9 @@ use App\Http\Controllers\Teacher\Concerns\OwnsResources;
 use App\Models\Address;
 use App\Models\Group;
 use App\Support\Clock;
+use App\Support\TimeLabel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\View\View;
 
 class BeamerController extends Controller
@@ -39,7 +39,7 @@ class BeamerController extends Controller
             'group' => $group,
             'pins' => $pins,
             'domain' => config('lemurmail.mail_domain'),
-            'validUntil' => Carbon::createFromTimestamp($window->endsAt, config('app.timezone'))->format('H:i'),
+            'validUntil' => TimeLabel::until($window->endsAt, $now),
             'endsAt' => $window->endsAt,
             'now' => $now,
         ]);

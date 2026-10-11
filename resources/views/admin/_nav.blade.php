@@ -2,6 +2,7 @@
     <nav class="flex flex-wrap gap-x-8 gap-y-2 text-[17px]" aria-label="{{ __('common.main_navigation') }}">
         <x-nav-item :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">{{ __('admin.nav.users') }}</x-nav-item>
         <x-nav-item :href="route('admin.domains.index')" :active="request()->routeIs('admin.domains.*')">{{ __('admin.nav.domains') }}</x-nav-item>
+        <x-nav-item :href="route('admin.settings.edit')" :active="request()->routeIs('admin.settings.*')">{{ __('admin.nav.settings') }}</x-nav-item>
     </nav>
 
     @if ($errors->any())

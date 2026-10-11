@@ -27,11 +27,8 @@ class LessonService
 
     public function extend(Group $group, int $now): void
     {
-        $window = $this->runningWindow($group, $now)->extend(
-            $now,
-            config('lemurmail.extend_seconds'),
-            config('lemurmail.max_lesson_seconds'),
-        );
+        $running = $this->runningWindow($group, $now);
+        $window = $running->extend($now, config('lemurmail.extend_seconds'), $this->extendCap($running));
 
         DB::transaction(function () use ($group, $window, $now) {
             $group->update(['lesson_ends_at' => $window->endsAt]);
@@ -80,6 +77,14 @@ class LessonService
             : $now + config('lemurmail.single_pin_seconds');
 
         $this->pins->issue($address, $expiresAt);
+    }
+
+    /** Lessons ended by a date may run for the PIN maximum, duration based ones only for the lesson maximum. */
+    private function extendCap(HourWindow $window): int
+    {
+        return $window->endsAt - $window->startedAt > config('lemurmail.max_lesson_seconds')
+            ? config('lemurmail.max_pin_seconds')
+            : config('lemurmail.max_lesson_seconds');
     }
 
     private function runningWindow(Group $group, int $now): HourWindow

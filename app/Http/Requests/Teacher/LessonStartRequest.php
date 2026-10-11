@@ -27,9 +27,10 @@ class LessonStartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mode' => ['required', Rule::in(['minutes', 'until'])],
-            'minutes' => ['required_if:mode,minutes', 'integer', 'between:1,'.$this->maxMinutes()],
-            'until' => ['required_if:mode,until', 'date_format:H:i'],
+            'mode' => ['required', Rule::in(['minutes', 'until', 'date'])],
+            'minutes' => ['nullable', 'required_if:mode,minutes', 'integer', 'between:1,'.$this->maxMinutes()],
+            'until' => ['nullable', 'required_if:mode,until', 'date_format:H:i'],
+            'until_date' => ['nullable', 'required_if:mode,date', 'date_format:Y-m-d'],
         ];
     }
 
@@ -42,10 +43,12 @@ class LessonStartRequest extends FormRequest
             'minutes.between' => __('lesson.minutes_invalid', ['max' => $this->maxMinutes()]),
             'until.required_if' => __('lesson.until_invalid'),
             'until.date_format' => __('lesson.until_invalid'),
+            'until_date.required_if' => __('lesson.until_date_invalid', ['days' => $this->maxDays()]),
+            'until_date.date_format' => __('lesson.until_date_invalid', ['days' => $this->maxDays()]),
         ];
     }
 
-    /** Preconditions and the "until" range, checked once the format is valid. */
+    /** Preconditions and the end range, checked once the format is valid. */
     public function after(): array
     {
         return [function (Validator $validator): void {
@@ -64,6 +67,14 @@ class LessonStartRequest extends FormRequest
                     $validator->errors()->add('until', __('lesson.until_out_of_range', ['hours' => intdiv($this->maxSeconds(), 3600)]));
                 }
             }
+
+            if ($this->input('mode') === 'date' && ! $validator->errors()->has('until_date')) {
+                try {
+                    $this->window();
+                } catch (InvalidArgumentException) {
+                    $validator->errors()->add('until_date', __('lesson.until_date_invalid', ['days' => $this->maxDays()]));
+                }
+            }
         }];
     }
 
@@ -72,15 +83,19 @@ class LessonStartRequest extends FormRequest
     {
         $now = Clock::now();
 
-        if ($this->input('mode') === 'until') {
-            $endsAt = Carbon::today(config('app.timezone'))
+        return match ($this->input('mode')) {
+            // The end of the chosen day, in the app timezone; the longest validity is the PIN maximum.
+            'date' => HourWindow::until($now, $this->endOfDay(), config('lemurmail.max_pin_seconds')),
+            'until' => HourWindow::until($now, Carbon::today(config('app.timezone'))
                 ->setTimeFromTimeString((string) $this->input('until'))
-                ->getTimestamp();
+                ->getTimestamp(), $this->maxSeconds()),
+            default => HourWindow::start($now, (int) $this->input('minutes') * 60, $this->maxSeconds()),
+        };
+    }
 
-            return HourWindow::until($now, $endsAt, $this->maxSeconds());
-        }
-
-        return HourWindow::start($now, (int) $this->input('minutes') * 60, $this->maxSeconds());
+    private function endOfDay(): int
+    {
+        return Carbon::parse($this->input('until_date').' 23:59:00', config('app.timezone'))->getTimestamp();
     }
 
     private function maxSeconds(): int
@@ -91,5 +106,10 @@ class LessonStartRequest extends FormRequest
     private function maxMinutes(): int
     {
         return intdiv($this->maxSeconds(), 60);
+    }
+
+    private function maxDays(): int
+    {
+        return intdiv(config('lemurmail.max_pin_seconds'), 86400);
     }
 }

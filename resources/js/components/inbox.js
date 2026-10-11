@@ -1,7 +1,9 @@
 import { mergeMessages, nextSelection, pollDelay } from '../core/inbox.js';
-import { clockOffset, formatClock, remainingMinutes, secondsLeft } from '../core/time.js';
+import { clockOffset, formatClock, remainingDays, remainingMinutes, secondsLeft } from '../core/time.js';
 
 const MAX_POLL_DELAY_MS = 60000;
+
+const DAY_SECONDS = 86400;
 
 const localNow = () => Math.floor(Date.now() / 1000);
 
@@ -189,7 +191,12 @@ export default (Alpine) => {
                 return secondsLeft(config.expiresAt, this.now, offset);
             },
 
+            // Whole days while a day or more is left, minutes below that.
             get label() {
+                if (this.left >= DAY_SECONDS) {
+                    const days = remainingDays(this.left);
+                    return fill(days === 1 ? config.daysOne : config.daysOther, { count: days });
+                }
                 return fill(config.template, { minutes: remainingMinutes(this.left) });
             },
         };

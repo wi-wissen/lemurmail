@@ -1,8 +1,19 @@
+@php
+    $left = $endsAt - $now;
+    $daysLeft = (int) ceil($left / 86400);
+    $initialRemaining = $left >= 86400
+        ? __('lesson.beamer_days_'.($daysLeft === 1 ? 'one' : 'other'), ['count' => $daysLeft])
+        : __('lesson.beamer_remaining', ['time' => $left >= 3600 ? gmdate('G:i:s', $left) : intdiv($left, 60).gmdate(':s', $left)]);
+@endphp
+
 <x-beamer-layout :title="$group->name">
     <main
         x-data="beamer"
         data-ends-at="{{ $endsAt }}"
         data-server-now="{{ $now }}"
+        data-clock-template="{{ __('lesson.beamer_remaining', ['time' => ':time']) }}"
+        data-days-one="{{ __('lesson.beamer_days_one', ['count' => ':count']) }}"
+        data-days-other="{{ __('lesson.beamer_days_other', ['count' => ':count']) }}"
         x-bind:style="'--scale: ' + scale / 100"
         class="flex min-h-screen flex-col gap-5 px-5 py-6 sm:px-14 sm:pb-6 sm:pt-8"
     >
@@ -16,9 +27,7 @@
                     <span class="text-beamer-muted" style="font-size: calc(1.25rem * var(--scale, 1))">{{ __('lesson.valid_until') }}</span>
                     <span class="font-mono font-bold leading-none text-beamer-accent" style="font-size: calc(4rem * var(--scale, 1))">{{ $validUntil }}</span>
                 </div>
-                <span class="font-mono text-beamer-warn" style="font-size: calc(1.875rem * var(--scale, 1))">
-                    {{ __('lesson.beamer_remaining') }} <span x-text="remaining"></span>
-                </span>
+                <span class="font-mono text-beamer-warn" style="font-size: calc(1.875rem * var(--scale, 1))" x-text="remaining">{{ $initialRemaining }}</span>
             </div>
         </header>
 

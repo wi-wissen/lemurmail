@@ -3,7 +3,8 @@
 return [
     'nav' => [
         'users' => 'Teacher accounts',
-        'domains' => 'Domains',
+        'domains' => 'School domains',
+        'settings' => 'Settings',
     ],
 
     'status' => [
@@ -31,7 +32,6 @@ return [
         'col_limit' => 'Address limit',
         'col_created' => 'Created',
         'col_actions' => 'Actions',
-        'default_limit' => 'Default (:n)',
         'limit_label' => 'Own address limit, empty = default',
         'empty' => 'No teachers yet.',
         'approve' => 'Approve',
@@ -55,7 +55,7 @@ return [
 
     'domains' => [
         'organization_title' => 'School domains',
-        'organization_hint' => 'Registrations with these domains are approved automatically.',
+        'organization_hint' => 'E-mail domains of teachers, for example schule.example.org. Anyone registering with such an address is approved at once. This has nothing to do with the allowed mail senders, which teachers manage themselves.',
         'freemail_title' => 'Blocked domains',
         'freemail_hint' => 'Freemail and disposable domains that cannot be used to register.',
         'domain' => 'Domain',

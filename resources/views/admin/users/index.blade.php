@@ -1,3 +1,22 @@
+@php
+    use App\Http\Controllers\Admin\UserController;
+    use App\Models\User;
+
+    $columns = [
+        'email' => __('admin.users.col_email'),
+        'status' => __('admin.users.col_status'),
+        'addresses' => __('admin.users.col_addresses'),
+        'limit' => __('admin.users.col_limit'),
+        'created' => __('admin.users.col_created'),
+        'actions' => __('admin.users.col_actions'),
+    ];
+    $statusClasses = [
+        User::STATUS_PENDING => 'border-warn bg-warn-soft text-warn-ink',
+        User::STATUS_ACTIVE => 'border-accent bg-accent-soft text-ink',
+        User::STATUS_REJECTED => 'border-danger bg-danger-soft text-danger-ink',
+        User::STATUS_BLOCKED => 'border-danger bg-danger-soft text-danger-ink',
+    ];
+@endphp
 <x-app-layout>
     @include('admin._nav')
 
@@ -7,85 +26,83 @@
             <p class="mt-2 text-base text-ink-soft">{{ trans_choice('admin.users.pending_summary', $pendingCount) }}</p>
         </x-card>
 
-        <x-card>
-            <h2 class="text-xl font-bold text-ink">{{ __('admin.settings.title') }}</h2>
-            <form method="POST" action="{{ route('admin.settings.update') }}" class="mt-4 flex flex-wrap items-end gap-4">
-                @csrf
-                @method('PATCH')
-                <div class="w-full sm:w-64">
-                    <x-input-label for="global_address_limit" :value="__('admin.settings.label')" />
-                    <x-text-input id="global_address_limit" name="address_limit" type="number" min="1" required class="mt-2" :value="$defaultLimit" />
-                </div>
-                <x-primary-button>{{ __('common.save') }}</x-primary-button>
-            </form>
-            <p class="mt-3 text-[15px] text-ink-soft">{{ __('admin.settings.hint') }}</p>
-        </x-card>
-
         <div class="overflow-hidden rounded-lg border border-line bg-surface">
             @if ($users->isEmpty())
                 <p class="p-6 text-base text-ink-soft">{{ __('admin.users.empty') }}</p>
             @else
                 <div class="overflow-x-auto">
-                    <table class="w-full min-w-[760px] border-collapse text-base">
-                        <thead class="text-left text-[15px] text-ink-soft">
+                    <table class="w-full min-w-[760px] border-collapse text-[15px]">
+                        <thead class="text-left text-ink-soft">
                             <tr>
-                                <th scope="col" class="px-5 py-3 font-bold">{{ __('admin.users.col_email') }}</th>
-                                <th scope="col" class="px-5 py-3 font-bold">{{ __('admin.users.col_status') }}</th>
-                                <th scope="col" class="px-5 py-3 font-bold">{{ __('admin.users.col_addresses') }}</th>
-                                <th scope="col" class="px-5 py-3 font-bold">{{ __('admin.users.col_limit') }}</th>
-                                <th scope="col" class="px-5 py-3 font-bold">{{ __('admin.users.col_created') }}</th>
-                                <th scope="col" class="px-5 py-3 font-bold">{{ __('admin.users.col_actions') }}</th>
+                                @foreach ($columns as $column => $label)
+                                    @php($startDir = UserController::SORTS[$column] ?? null)
+                                    @if ($startDir === null)
+                                        <th scope="col" class="whitespace-nowrap px-3 py-3 font-bold">{{ $label }}</th>
+                                    @else
+                                        @php($active = $sort === $column)
+                                        <th scope="col" class="whitespace-nowrap px-3 py-3 font-bold" @if ($active) aria-sort="{{ $dir === 'asc' ? 'ascending' : 'descending' }}" @endif>
+                                            <a href="{{ route('admin.users.index', array_merge(request()->query(), ['sort' => $column, 'dir' => $active ? ($dir === 'asc' ? 'desc' : 'asc') : $startDir])) }}"
+                                                class="inline-flex min-h-[36px] items-center gap-1.5 rounded text-ink-soft hover:text-ink hover:underline focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                                                {{ $label }}
+                                                @if ($active)
+                                                    <svg class="h-3.5 w-3.5 {{ $dir === 'desc' ? 'rotate-180' : '' }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5 8 6l4.5 4.5"/></svg>
+                                                @else
+                                                    <svg class="h-3.5 w-3.5 opacity-40" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6.5 8 3.5l3 3M5 9.5l3 3 3-3"/></svg>
+                                                @endif
+                                            </a>
+                                        </th>
+                                    @endif
+                                @endforeach
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
-                                <tr class="border-t border-line align-top">
-                                    <td class="px-5 py-4">
-                                        <div class="min-w-[15rem] font-bold text-ink">{{ $user->email }}</div>
-                                        @if ($user->isSuperAdmin())
-                                            <div class="mt-1 text-[15px] text-accent">{{ __('admin.super_admin') }}</div>
-                                        @endif
+                                <tr class="border-t border-line">
+                                    <td class="whitespace-nowrap px-3 py-3">
+                                        <div class="max-w-[14rem] truncate font-bold text-ink" title="{{ $user->email }}">{{ $user->email }}</div>
                                     </td>
-                                    <td class="px-5 py-4">
-                                        <span @class([
-                                            'inline-block rounded-full border px-3 py-0.5 text-[15px] font-bold',
-                                            'border-warn bg-warn-soft text-warn-ink' => $user->status === \App\Models\User::STATUS_PENDING,
-                                            'border-accent bg-accent-soft text-ink' => $user->status === \App\Models\User::STATUS_ACTIVE,
-                                            'border-danger bg-danger-soft text-danger-ink' => in_array($user->status, [\App\Models\User::STATUS_REJECTED, \App\Models\User::STATUS_BLOCKED], true),
-                                        ])>{{ __('admin.status.'.$user->status) }}</span>
+                                    <td class="whitespace-nowrap px-3 py-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="inline-block rounded-full border px-3 py-0.5 font-bold {{ $statusClasses[$user->status] }}">{{ __('admin.status.'.$user->status) }}</span>
+                                            @if ($user->isSuperAdmin())
+                                                <span class="text-accent">{{ __('admin.super_admin') }}</span>
+                                            @endif
+                                        </div>
                                     </td>
-                                    <td class="px-5 py-4 font-mono">{{ $user->addresses_count }}</td>
-                                    <td class="px-5 py-4">
-                                        <div class="font-mono">{{ $user->address_limit ?? __('admin.users.default_limit', ['n' => $defaultLimit]) }}</div>
-                                        <form method="POST" action="{{ route('admin.users.limit', $user) }}" class="mt-2 flex items-center gap-2">
+                                    <td class="whitespace-nowrap px-3 py-3 font-mono tabular-nums">{{ $user->addresses_count }}</td>
+                                    <td class="whitespace-nowrap px-3 py-3">
+                                        <form method="POST" action="{{ route('admin.users.limit', $user) }}" class="flex items-center gap-2">
                                             @csrf
                                             @method('PATCH')
-                                            <input type="number" min="0" name="address_limit" value="{{ $user->address_limit }}" placeholder="{{ $defaultLimit }}" aria-label="{{ __('admin.users.limit_label') }}" title="{{ __('admin.users.limit_label') }}"
-                                                class="w-28 rounded-lg border-[1.5px] border-line-strong bg-surface px-3 py-2 text-[15px] text-ink focus:border-accent focus:ring-accent">
-                                            <x-secondary-button>{{ __('admin.users.limit_save') }}</x-secondary-button>
+                                            <input type="number" min="0" name="address_limit" value="{{ $user->address_limit }}" placeholder="{{ $defaultLimit }}" aria-label="{{ __('admin.users.limit_label') }}"
+                                                class="h-10 w-20 rounded-lg border-[1.5px] border-line-strong bg-surface px-2 font-mono text-ink placeholder:text-ink-soft focus:border-accent focus:ring-accent">
+                                            <button type="submit" aria-label="{{ __('admin.users.limit_save') }}" title="{{ __('admin.users.limit_save') }}"
+                                                class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-[1.5px] border-line-strong bg-surface text-ink hover:border-accent hover:bg-accent-soft hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg>
+                                            </button>
                                         </form>
                                     </td>
-                                    <td class="px-5 py-4 font-mono text-[15px]">{{ $user->created_at->format('Y-m-d') }}</td>
-                                    <td class="px-5 py-4">
-                                        <div class="flex flex-wrap gap-2">
-                                            @if ($user->status === \App\Models\User::STATUS_PENDING)
+                                    <td class="whitespace-nowrap px-3 py-3 font-mono tabular-nums">{{ $user->created_at->isoFormat('L') }}</td>
+                                    <td class="whitespace-nowrap px-3 py-3">
+                                        <div class="flex items-center gap-2">
+                                            @if ($user->status === User::STATUS_PENDING)
                                                 <form method="POST" action="{{ route('admin.users.approve', $user) }}">
                                                     @csrf
-                                                    <x-primary-button>{{ __('admin.users.approve') }}</x-primary-button>
+                                                    <button type="submit" class="inline-flex min-h-[36px] items-center rounded-lg bg-accent px-3 text-[15px] font-bold text-white hover:bg-accent-hover">{{ __('admin.users.approve') }}</button>
                                                 </form>
                                                 <form method="POST" action="{{ route('admin.users.reject', $user) }}">
                                                     @csrf
-                                                    <x-danger-button>{{ __('admin.users.reject') }}</x-danger-button>
+                                                    <button type="submit" class="min-h-[36px] px-2 text-[15px] font-bold text-ink-soft underline hover:text-danger focus-visible:text-danger">{{ __('admin.users.reject') }}</button>
                                                 </form>
-                                            @elseif ($user->status === \App\Models\User::STATUS_ACTIVE && ! $user->isSuperAdmin())
+                                            @elseif ($user->status === User::STATUS_ACTIVE && ! $user->isSuperAdmin())
                                                 <form method="POST" action="{{ route('admin.users.block', $user) }}">
                                                     @csrf
-                                                    <x-danger-button>{{ __('admin.users.block') }}</x-danger-button>
+                                                    <button type="submit" class="min-h-[36px] px-2 text-[15px] font-bold text-ink-soft underline hover:text-danger focus-visible:text-danger">{{ __('admin.users.block') }}</button>
                                                 </form>
-                                            @elseif ($user->status === \App\Models\User::STATUS_BLOCKED)
+                                            @elseif ($user->status === User::STATUS_BLOCKED)
                                                 <form method="POST" action="{{ route('admin.users.unblock', $user) }}">
                                                     @csrf
-                                                    <x-secondary-button>{{ __('admin.users.unblock') }}</x-secondary-button>
+                                                    <button type="submit" class="inline-flex min-h-[36px] items-center rounded-lg border-[1.5px] border-line-strong bg-surface px-3 text-[15px] font-bold text-ink hover:bg-paper">{{ __('admin.users.unblock') }}</button>
                                                 </form>
                                             @endif
                                         </div>
