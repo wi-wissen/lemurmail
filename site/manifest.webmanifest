@@ -1,0 +1,14 @@
+{
+  "name": "Lemur Mail",
+  "short_name": "Lemur Mail",
+  "description": "Pseudonyme Postfächer für den Unterricht",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F5F7F6",
+  "theme_color": "#0B7A5E",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

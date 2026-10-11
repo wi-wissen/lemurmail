@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img"><title>Lemur Mail mascot: a ring-tailed lemur holding a letter</title>
+<path d="M118 180C152 186 175 162 172 128C169 98 152 86 159 62C164 44 180 44 178 58" fill="none" stroke="#7E978D" stroke-width="19" stroke-linecap="round"/>
+<path d="M118 180C152 186 175 162 172 128C169 98 152 86 159 62C164 44 180 44 178 58" fill="none" stroke="#F5F7F6" stroke-width="14" stroke-linecap="round"/>
+<path d="M118 180C152 186 175 162 172 128C169 98 152 86 159 62C164 44 180 44 178 58" fill="none" stroke="#16211D" stroke-width="14" stroke-dasharray="10 9"/>
+<circle cx="178" cy="58" r="7" fill="#16211D"/>
+<path d="M92 96C64 96 50 130 52 156C54 180 72 190 92 190C112 190 130 180 132 156C134 130 120 96 92 96Z" fill="#9DB5AB"/>
+<ellipse cx="92" cy="150" rx="22" ry="30" fill="#F5F7F6"/>
+<ellipse cx="64" cy="170" rx="15" ry="19" transform="rotate(-25 64 170)" fill="#8FA89E"/>
+<ellipse cx="120" cy="170" rx="15" ry="19" transform="rotate(25 120 170)" fill="#8FA89E"/>
+<ellipse cx="75" cy="188" rx="13" ry="7" fill="#7A9389"/><ellipse cx="109" cy="188" rx="13" ry="7" fill="#7A9389"/>
+<path d="M67 116Q58 138 75 149M117 116Q126 138 109 149" fill="none" stroke="#9DB5AB" stroke-width="13" stroke-linecap="round"/>
+<rect x="76" y="136" width="32" height="22" rx="3" fill="#FFFFFF" stroke="#0B7A5E" stroke-width="2.5"/>
+<path d="M77 138L92 149L107 138" fill="none" stroke="#0B7A5E" stroke-width="2.5" stroke-linejoin="round"/>
+<circle cx="76" cy="148" r="6.5" fill="#9DB5AB"/><circle cx="108" cy="148" r="6.5" fill="#9DB5AB"/>
+<g transform="translate(39 4) scale(1.06)">
+<ellipse cx="22" cy="28" rx="11" ry="14" transform="rotate(-35 22 28)" fill="#9DB5AB"/><ellipse cx="78" cy="28" rx="11" ry="14" transform="rotate(35 78 28)" fill="#9DB5AB"/>
+<ellipse cx="21" cy="27" rx="6" ry="8.5" transform="rotate(-35 21 27)" fill="#F5F7F6"/><ellipse cx="79" cy="27" rx="6" ry="8.5" transform="rotate(35 79 27)" fill="#F5F7F6"/>
+<path d="M50 89C36 89 14 77 14 57C14 37 30 26 50 26C70 26 86 37 86 57C86 77 64 89 50 89Z" fill="#9DB5AB"/>
+<path d="M33 31Q50 22 67 31Q61 43 50 47Q39 43 33 31Z" fill="#7A9389"/>
+<path d="M50 88C38 88 19 78 19 63C19 52 31 47 50 50C69 47 81 52 81 63C81 78 62 88 50 88Z" fill="#FFFFFF"/>
+<ellipse cx="36" cy="59" rx="11" ry="13.5" transform="rotate(-28 36 59)" fill="#16211D"/>
+<ellipse cx="64" cy="59" rx="11" ry="13.5" transform="rotate(28 64 59)" fill="#16211D"/>
+<circle cx="37" cy="58" r="5.8" fill="#F2B36B"/><circle cx="63" cy="58" r="5.8" fill="#F2B36B"/>
+<circle cx="37.5" cy="58.5" r="2.8" fill="#16211D"/><circle cx="62.5" cy="58.5" r="2.8" fill="#16211D"/>
+<circle cx="39.2" cy="56.3" r="1.3" fill="#FFFFFF"/><circle cx="64.2" cy="56.3" r="1.3" fill="#FFFFFF"/>
+<path d="M44 71Q50 68 56 71Q56 76 50 79Q44 76 44 71Z" fill="#16211D"/>
+<path d="M45.5 82.5Q47.8 84.8 50 82.5Q52.2 84.8 54.5 82.5" fill="none" stroke="#16211D" stroke-width="1.6" stroke-linecap="round"/>
+</g>
+</svg>
