@@ -15,7 +15,8 @@ services:
         init: true
         restart: unless-stopped
         ports:
-            - "127.0.0.1:8080:8080"
+            # Host side is configurable in .env (APP_PORT, BIND_ADDRESS); the container always listens on 8080.
+            - "${BIND_ADDRESS:-127.0.0.1}:${APP_PORT:-8080}:8080"
         # All settings come from .env next to this file. After editing it: docker compose up -d
         env_file: .env
         volumes:

@@ -124,7 +124,9 @@ it survives container updates and can be backed up like any file.
    ```
 
 4. Put a reverse proxy in front that terminates TLS and forwards to `127.0.0.1:8080`. The compose file binds the
-   container to localhost only. Example with Caddy:
+   container to localhost only, on port 8080, so it does not compete with the proxy for ports 80 and 443. Change it with
+   `APP_PORT` and `BIND_ADDRESS` in `.env` (for example `APP_PORT=80` and `BIND_ADDRESS=0.0.0.0` to publish plain HTTP
+   directly; the app itself has no TLS, so do that only behind another TLS terminator). Example with Caddy:
 
    ```
    tmp-mail.example.org {
@@ -147,7 +149,7 @@ Variables marked *required* must be set in production. The values in `.env.examp
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `APP_KEY` | – (generated) | Encryption key. In the container it is generated on the first start and stored in `data/app.key` when empty. To set it yourself: `docker run --rm ghcr.io/wi-wissen/lemurmail:latest php artisan key:generate --show`. Back it up: without it stored secrets cannot be read. |
-| `APP_URL` | `http://localhost:8000` | Public URL, for example `https://tmp-mail.example.org`. |
+| `APP_URL` | `http://localhost` | Public URL, for example `https://tmp-mail.example.org`. |
 | `APP_NAME` | `Lemur Mail` | Name shown in the UI and mail sender name. |
 | `APP_ENV` | `local` (`production` in the image) | Environment. |
 | `APP_DEBUG` | `true` (`false` in the image) | Show error details. Keep `false` in production. |
