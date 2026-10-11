@@ -41,6 +41,7 @@
                                         <td class="px-3 py-3">{{ $address->messages_count }}</td>
                                         <td class="px-6 py-3">
                                             <div class="flex flex-wrap justify-end gap-2">
+                                                <a href="{{ route('addresses.inbox', $address) }}" class="inline-flex min-h-[40px] items-center px-3 text-[15px] font-bold text-accent underline">{{ __('teacher.addresses.inbox') }}</a>
                                                 @if (Route::has('addresses.pin.regenerate'))
                                                     <form method="POST" action="{{ route('addresses.pin.regenerate', $address) }}">
                                                         @csrf

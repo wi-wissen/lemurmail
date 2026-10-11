@@ -30,6 +30,11 @@ return [
         'extra_senders' => 'Additional senders (:count)',
         'extra_senders_hint' => 'Apply to this address only, in addition to the group list.',
         'no_extra_senders' => 'No additional senders.',
+        'inbox' => 'Inbox',
+    ],
+    'inbox' => [
+        'back_group' => 'Back to the group',
+        'back_groups' => 'Back to the groups',
     ],
     'pins' => [
         'csv' => 'Download CSV',

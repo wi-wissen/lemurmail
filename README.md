@@ -1,6 +1,6 @@
 # Lemur Mail
 
-Receive-only throwaway mailboxes for schools. A teacher creates addresses such as `klasse7a-03@tmp-mail.example.org`
+Receive-only pseudonymous mailboxes for schools. A teacher creates addresses such as `klasse7a-03@tmp-mail.example.org`
 with a PIN for each one. Students sign in with address and PIN and read the confirmation and password-reset mails
 they receive while signing up for online services. Nothing can be sent from the system, and every mail is deleted
 after 7 days at the latest.

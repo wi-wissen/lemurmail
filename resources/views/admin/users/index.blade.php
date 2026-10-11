@@ -41,7 +41,7 @@
                             @foreach ($users as $user)
                                 <tr class="border-t border-line align-top">
                                     <td class="px-5 py-4">
-                                        <div class="break-all font-bold text-ink">{{ $user->email }}</div>
+                                        <div class="min-w-[15rem] font-bold text-ink">{{ $user->email }}</div>
                                         @if ($user->isSuperAdmin())
                                             <div class="mt-1 text-[15px] text-accent">{{ __('admin.super_admin') }}</div>
                                         @endif

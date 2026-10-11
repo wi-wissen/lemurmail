@@ -2,7 +2,7 @@
 
 Source: the owner's requirements document (German) and the mockup canvas "Mockups: Lemur Mail".
 
-- Receive-only throwaway mailbox service for schools (~20 teachers + their classes). Mails are deleted after 7 days at the latest.
+- Receive-only pseudonymous mailbox service for schools (~20 teachers + their classes). Mails are deleted after 7 days at the latest.
 - Roles: Super-Admin (approves registrations, maintains organisation + freemail domains, address caps), Teacher (addresses, PINs, groups, lessons, whitelist), Mailbox user/student (address + PIN, no account).
 - Teacher registration: e-mail + password + Friendly Captcha, e-mail verification (Breeze). Approved organisation domain = active at once, otherwise "pending approval" and the admin is notified. Own mailbox domain and freemail/disposable domains are rejected.
 - Addresses: single or series (prefix + count), local part `a-z 0-9 - _ .`, globally unique, 8-character PIN without look-alike characters, cap per teacher (default 200).

@@ -1,6 +1,6 @@
 # Lemur Mail — architecture notes
 
-Receive-only throwaway mailboxes for schools. Teachers create addresses (with PINs), students sign in with
+Receive-only pseudonymous mailboxes for schools. Teachers create addresses (with PINs), students sign in with
 address + PIN and read confirmation / password-reset mails. Nothing can be sent. Requirements: `docs/requirements.md`.
 
 ## Language rules

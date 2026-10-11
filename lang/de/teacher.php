@@ -30,6 +30,11 @@ return [
         'extra_senders' => 'Zusätzliche Absender (:count)',
         'extra_senders_hint' => 'Gelten nur für diese Adresse, zusätzlich zur Liste der Gruppe.',
         'no_extra_senders' => 'Keine zusätzlichen Absender.',
+        'inbox' => 'Postfach',
+    ],
+    'inbox' => [
+        'back_group' => 'Zurück zur Gruppe',
+        'back_groups' => 'Zurück zu den Gruppen',
     ],
     'pins' => [
         'csv' => 'CSV herunterladen',

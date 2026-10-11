@@ -2,7 +2,7 @@
 
 return [
     'nav' => [
-        'users' => 'Lehrkraft-Konten',
+        'users' => 'Lehrer:innen-Konten',
         'domains' => 'Domains',
     ],
 
@@ -23,7 +23,7 @@ return [
     ],
 
     'users' => [
-        'title' => 'Lehrkraft-Konten',
+        'title' => 'Lehrer:innen-Konten',
         'pending_summary' => '{0} Keine Konten warten auf Freigabe.|{1} :count Konto wartet auf Freigabe.|[2,*] :count Konten warten auf Freigabe.',
         'col_email' => 'E-Mail',
         'col_status' => 'Status',
@@ -33,14 +33,14 @@ return [
         'col_actions' => 'Aktionen',
         'default_limit' => 'Standard (:n)',
         'limit_label' => 'Eigenes Adresslimit, leer = Standard',
-        'empty' => 'Noch keine Lehrkräfte angelegt.',
+        'empty' => 'Noch keine Lehrer:innen angelegt.',
         'approve' => 'Freigeben',
         'reject' => 'Ablehnen',
         'block' => 'Sperren',
         'unblock' => 'Entsperren',
         'limit_save' => 'Limit setzen',
-        'approved' => 'Konto freigegeben. Die Lehrkraft wurde per E-Mail informiert.',
-        'rejected' => 'Anmeldung abgelehnt. Die Lehrkraft wurde per E-Mail informiert.',
+        'approved' => 'Konto freigegeben. Die Lehrer:in wurde per E-Mail informiert.',
+        'rejected' => 'Anmeldung abgelehnt. Die Lehrer:in wurde per E-Mail informiert.',
         'blocked' => 'Konto gesperrt.',
         'unblocked' => 'Konto entsperrt.',
         'limit_saved' => 'Adresslimit gespeichert.',
@@ -48,8 +48,8 @@ return [
 
     'settings' => [
         'title' => 'Globales Standard-Adresslimit',
-        'label' => 'Standard je Lehrkraft',
-        'hint' => 'Gilt für alle Lehrkräfte ohne eigenes Limit.',
+        'label' => 'Standard je Lehrer:in',
+        'hint' => 'Gilt für alle Lehrer:innen ohne eigenes Limit.',
         'saved' => 'Standard-Adresslimit gespeichert.',
     ],
 

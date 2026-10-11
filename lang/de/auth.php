@@ -55,7 +55,7 @@ return [
     'confirm_intro' => 'Dieser Bereich ist geschützt. Bitte bestätige dein Passwort, um weiterzumachen.',
     'confirm_submit' => 'Bestätigen',
 
-    'approval_mail_subject' => 'Eine neue Lehrkraft wartet auf Freigabe',
+    'approval_mail_subject' => 'Eine neue Lehrer:in wartet auf Freigabe',
     'approval_mail_line' => 'Die Adresse :email hat ihre E-Mail bestätigt und wartet auf die Freigabe.',
     'approval_mail_action' => 'Zur Benutzerverwaltung',
 
