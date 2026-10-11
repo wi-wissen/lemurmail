@@ -14,6 +14,8 @@ use Tests\TestCase;
 |
 */
 
+require_once __DIR__.'/Support/WebhookHelpers.php';
+
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
     ->in('Feature');

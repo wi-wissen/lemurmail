@@ -19,8 +19,12 @@ return [
     'max_lesson_seconds' => (int) env('MAX_LESSON_MINUTES', 720) * 60,
     'extend_seconds' => 15 * 60,
 
+    // Validity of a single regenerated PIN when its group has no running lesson.
+    'single_pin_seconds' => 45 * 60,
+
     // PIN brute-force protection.
-    'pin_max_attempts' => 5,
+    'pin_max_attempts' => 5,        // per address (and input) and IP
+    'pin_ip_max_attempts' => 30,    // per IP over all addresses (a whole class may share one school IP)
     'pin_decay_seconds' => 15 * 60,
 
     'locales' => ['de', 'en'],
