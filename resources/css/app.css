@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-paper font-sans text-ink antialiased;
+    }
+
+    :focus-visible {
+        @apply outline outline-2 outline-offset-2 outline-accent;
+    }
+
+    a {
+        @apply text-accent hover:text-accent-hover;
+    }
+}
+
+@layer components {
+    .frc-captcha {
+        @apply w-full max-w-full;
+    }
+}
