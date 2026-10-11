@@ -19,7 +19,7 @@ WORKDIR /build
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --no-progress --no-scripts --no-autoloader --prefer-dist
 COPY . .
-RUN composer dump-autoload --no-dev --optimize-autoloader --no-scripts
+RUN composer dump-autoload --no-dev --optimize --no-scripts
 
 # Stage 3: runtime ----------------------------------------------------------
 FROM dunglas/frankenphp:1-php8.4-alpine AS runtime
@@ -38,6 +38,9 @@ RUN addgroup -S -g 1000 lemur \
 
 ENV APP_ENV=production \
     APP_DEBUG=false \
+    APP_LOCALE=de \
+    APP_FALLBACK_LOCALE=de \
+    APP_TIMEZONE=Europe/Berlin \
     LOG_CHANNEL=stderr \
     LOG_LEVEL=info \
     DB_CONNECTION=sqlite \

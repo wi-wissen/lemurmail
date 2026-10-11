@@ -73,22 +73,57 @@ A valid webhook is answered with a 2xx status even when the recipient is unknown
 mails nobody asked for. An invalid signature is answered with 401. Signatures older than 5 minutes are rejected, so the server
 clock must be synchronised.
 
+## Lettermint setup (outgoing system mail)
+
+Verification, password-reset and approval mails that Lemur Mail itself sends can go through the same Lettermint account.
+Students still cannot send anything: there is no way to send from a mailbox, only the system sends.
+
+1. In Lettermint, verify a **sending domain** (SPF and DKIM records) and use an address on it as `MAIL_FROM_ADDRESS`,
+   for example `noreply@nein-ev.de`. It can also be a subdomain; Lettermint's documentation does not say that sending
+   and receiving on the very same subdomain is a problem, but a separate sending domain is the safe choice.
+2. In the project settings, enable **SMTP** and create a **project API token**.
+3. Set the SMTP variables (see [Lettermint's SMTP guide](https://lettermint.co/docs/guides/send-email-with-smtp)):
+
+   ```
+   MAIL_MAILER=smtp
+   MAIL_HOST=smtp.lettermint.co
+   MAIL_PORT=587            # STARTTLS; use 465 with MAIL_SCHEME=smtps for implicit TLS
+   MAIL_USERNAME=lettermint
+   MAIL_PASSWORD=<project API token>
+   MAIL_FROM_ADDRESS=noreply@nein-ev.de
+   ```
+
+Sent mail counts against the monthly quota of your plan, together with the received mail. Replies to the system address
+that arrive on the catch-all domain are dropped (no such mailbox). The official `lettermint-laravel` package would use the
+HTTP API instead of SMTP; it is not needed here and not a dependency of this project.
+
 ## Production deployment
 
 The production image is built from the `Dockerfile` in this repository and published to GitHub Container Registry
 on every version tag (`v1.2.3`). It contains one process that serves HTTP through FrankenPHP (Caddy + PHP) and runs
-the scheduler. The SQLite database lives in the volume `/data`.
+the scheduler. The SQLite database lives in `/data`, which the compose file mounts from the folder `./data` on the host, so
+it survives container updates and can be backed up like any file.
 
-1. Copy `docker-compose.yml` to the server and create a `.env` file next to it with the variables from the
-   [configuration table](#configuration). `APP_KEY` can be generated with
-   `docker run --rm ghcr.io/wi-wissen/lemurmail:latest php artisan key:generate --show`.
-2. Start the container:
+1. Copy `docker-compose.yml` and `.env.docker.example` to the server. Rename the example to `.env` and edit it: that
+   file is the only thing you configure, the container reads it directly (see the [configuration table](#configuration)).
+   You do not need to create an `APP_KEY`: if it is empty, the container generates one on the first start and keeps it in
+   `data/app.key`. Set it yourself if you prefer to store the key apart from the data.
+2. Create the data folder for the SQLite database. The container runs as uid 1000:
+
+   ```bash
+   mkdir -p data && sudo chown 1000:1000 data
+   ```
+
+   SQLite is enough for this service: a few dozen teachers and mail in the hundreds per day is far below what it
+   handles. The database runs in WAL mode, so `data/` also holds `database.sqlite-wal` and `-shm` while the app runs;
+   always mount and back up the folder, never only the file.
+3. Start the container:
 
    ```bash
    docker compose up -d
    ```
 
-3. Put a reverse proxy in front that terminates TLS and forwards to `127.0.0.1:8080`. The compose file binds the
+4. Put a reverse proxy in front that terminates TLS and forwards to `127.0.0.1:8080`. The compose file binds the
    container to localhost only. Example with Caddy:
 
    ```
@@ -100,7 +135,7 @@ the scheduler. The SQLite database lives in the volume `/data`.
    The app trusts the proxy's forwarding headers. Set `SESSION_SECURE_COOKIE=true` (the compose file does this by default)
    and make sure the proxy forwards `X-Forwarded-Proto`.
 
-4. Create the first super admin (see [docs/operations.md](docs/operations.md)).
+5. Create the first super admin (see [docs/operations.md](docs/operations.md)).
 
 Migrations run automatically on every start. Read [docs/operations.md](docs/operations.md) for backups, upgrades and
 troubleshooting.
@@ -111,7 +146,7 @@ Variables marked *required* must be set in production. The values in `.env.examp
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `APP_KEY` | – (required) | Encryption key. Generate with `php artisan key:generate --show`. |
+| `APP_KEY` | – (generated) | Encryption key. In the container it is generated on the first start and stored in `data/app.key` when empty. To set it yourself: `docker run --rm ghcr.io/wi-wissen/lemurmail:latest php artisan key:generate --show`. Back it up: without it stored secrets cannot be read. |
 | `APP_URL` | `http://localhost:8000` | Public URL, for example `https://tmp-mail.example.org`. |
 | `APP_NAME` | `Lemur Mail` | Name shown in the UI and mail sender name. |
 | `APP_ENV` | `local` (`production` in the image) | Environment. |

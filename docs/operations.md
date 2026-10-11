@@ -16,31 +16,34 @@ SQLite database in the volume.
 
 ## Backup
 
-The data lives in the volume `lemurmail-data` (mounted at `/data`): the SQLite database. Backups contain **personal
-data** (mails and addresses), so store them as carefully as the server.
+The data lives in the folder `data/` next to `docker-compose.yml` (mounted at `/data`): the SQLite database. While the
+app runs, the folder also holds `database.sqlite-wal` and `database.sqlite-shm` (WAL mode), so **copying only the
+`.sqlite` file of a running app is not a safe backup**. Backups contain **personal data** (mails and addresses), so
+store them as carefully as the server.
 
 Create a consistent copy while the app keeps running (`VACUUM INTO` is safe under concurrent writes):
 
 ```bash
 docker compose exec lemurmail php -r '(new PDO("sqlite:/data/database.sqlite"))->exec("VACUUM INTO \"/data/backup.sqlite\"");'
-docker compose cp lemurmail:/data/backup.sqlite "./lemurmail-$(date +%F).sqlite"
-docker compose exec lemurmail rm /data/backup.sqlite
+mv data/backup.sqlite "./lemurmail-$(date +%F).sqlite"
 ```
 
-Also keep a copy of `APP_KEY` (from your `.env`) in your password manager. Encrypted address secrets can only be read
+If you left `APP_KEY` empty, the key is the file `data/app.key`: it is part of the backup, which means a stolen backup
+contains the key too. Set `APP_KEY` in `.env` instead if backups leave the server, and keep a copy of it in your password
+manager. Encrypted address secrets can only be read
 with the key that encrypted them, and a backup without the key does not restore them.
 
-Restore (replace the file in the volume while the container is stopped):
+Restore (replace the files while the container is stopped; delete stale `-wal`/`-shm` files):
 
 ```bash
 docker compose down
-docker run --rm -v "$(basename "$PWD")_lemurmail-data":/data -v "$PWD":/backup alpine \
-    sh -c 'cp /backup/lemurmail-2026-10-01.sqlite /data/database.sqlite && chown 1000:1000 /data/database.sqlite'
+rm -f data/database.sqlite-wal data/database.sqlite-shm
+cp lemurmail-2026-10-01.sqlite data/database.sqlite
+sudo chown 1000:1000 data/database.sqlite
 docker compose up -d
 ```
 
-`docker volume ls` shows the exact volume name (`<project>_lemurmail-data`). Test a restore on another machine at
-least once.
+Test a restore on another machine at least once.
 
 ## Upgrade
 
@@ -80,7 +83,7 @@ visibility* → *Public*. Until then, the server cannot pull the image without a
 
 | Symptom | Cause and fix |
 | --- | --- |
-| Container exits at start with `APP_KEY must be set` | Set `APP_KEY` in `.env` (see README). Changing the key later makes encrypted secrets unreadable. |
+| Container exits at start with `... is not set` or `... is not writable` | The message names the missing setting for `.env` or the host folder to fix (`mkdir -p data && sudo chown 1000:1000 data`). Changing `APP_KEY` later makes encrypted secrets unreadable. |
 | Lettermint webhook answers **401** | The signing secret does not match `LETTERMINT_WEBHOOK_SECRET`, or the server clock differs from the real time by more than 5 minutes. Check the secret first, then the time (`timedatectl status`, enable NTP). |
 | Nothing arrives for an address | Check in this order: (1) MX record of the app subdomain points to `inbound.lettermint.co` (`dig MX tmp-mail.example.org`); (2) the sender is on the teacher's whitelist; (3) the sender is authenticated and aligned (DMARC, or DKIM/SPF for the From domain); (4) the Lettermint route has the subdomain as catch-all and the webhook URL is `https://<MAIL_DOMAIN>/webhooks/lettermint`. |
 | Old mails stay longer than 7 days | The scheduler is not running. Look for `schedule:work` errors in `docker compose logs`, then restart the container. |
