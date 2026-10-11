@@ -1,31 +1,24 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-    </div>
-
-    @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-        </div>
-    @endif
-
-    <div class="mt-4 flex items-center justify-between">
-        <form method="POST" action="{{ route('verification.send') }}">
-            @csrf
-
-            <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
+    <x-card>
+        <div class="flex flex-col gap-5">
+            <div class="flex flex-col gap-2">
+                <h1 class="text-[30px] font-bold leading-tight">{{ __('auth.verify_title') }}</h1>
+                <p class="text-[17px] leading-snug text-ink-soft">{{ __('auth.verify_intro') }}</p>
             </div>
-        </form>
 
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
+            @if (session('status') == 'verification-link-sent')
+                <x-alert type="success">{{ __('auth.verify_sent') }}</x-alert>
+            @endif
 
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Log Out') }}
-            </button>
-        </form>
-    </div>
+            <form method="POST" action="{{ route('verification.send') }}">
+                @csrf
+                <x-primary-button class="w-full">{{ __('auth.verify_resend') }}</x-primary-button>
+            </form>
+
+            <form method="POST" action="{{ route('logout') }}" class="border-t border-line pt-5">
+                @csrf
+                <button type="submit" class="text-base text-accent underline hover:text-accent-hover">{{ __('common.logout') }}</button>
+            </form>
+        </div>
+    </x-card>
 </x-guest-layout>

@@ -1,25 +1,28 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
+    <x-card>
+        <div class="flex flex-col gap-5">
+            <div class="flex flex-col gap-2">
+                <h1 class="text-[30px] font-bold leading-tight">{{ __('auth.forgot_title') }}</h1>
+                <p class="text-[17px] leading-snug text-ink-soft">{{ __('auth.forgot_intro') }}</p>
+            </div>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+            <x-auth-session-status :status="session('status')" />
 
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
+            <form method="POST" action="{{ route('password.email') }}" class="flex flex-col gap-5">
+                @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                <div>
+                    <x-input-label for="email" :value="__('auth.email')" />
+                    <x-text-input id="email" class="mt-1.5" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                </div>
+
+                <x-captcha />
+
+                <x-primary-button class="w-full">{{ __('auth.forgot_submit') }}</x-primary-button>
+            </form>
+
+            <a href="{{ route('login') }}" class="border-t border-line pt-5 text-base text-accent underline hover:text-accent-hover">{{ __('common.back') }}</a>
         </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
+    </x-card>
 </x-guest-layout>
