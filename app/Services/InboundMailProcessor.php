@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Core\Mail\AuthMode;
 use App\Core\Mail\SenderDecision;
 use App\Core\Mail\SenderPolicy;
 use App\Core\Webhook\InboundPayload;
@@ -30,6 +31,7 @@ class InboundMailProcessor
             $payload->spf,
             $payload->dkim,
             $payload->dmarc,
+            AuthMode::fromConfig(config('lemurmail.inbound_auth')),
         );
 
         return match ($decision) {

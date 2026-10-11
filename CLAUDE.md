@@ -24,8 +24,9 @@ address + PIN and read confirmation / password-reset mails. Nothing can be sent.
 - `resources/js/core/**` — pure JS (Vitest). `resources/js/components/**` — Alpine components that touch the DOM and call the core.
 
 ## Behaviour decisions (made by the tech lead)
-- A mail is stored only if the **From address** is whitelisted AND the sender is authenticated and aligned (DMARC pass, or DKIM/SPF pass for the From domain). The SMTP envelope sender is *not* required to be whitelisted because mail services use bounce domains. Missing authentication data = reject. Rejected mails still get a 2xx answer.
+- A mail is stored only if the **From address** is whitelisted AND the sender is authenticated and aligned (DMARC pass, or DKIM/SPF pass for the From domain). The SMTP envelope sender is *not* required to be whitelisted because mail services use bounce domains. Missing authentication data = reject. Rejected mails still get a 2xx answer. The strictness is configurable (`INBOUND_AUTH_MODE`: `aligned` default, `authenticated`, `off`; see `App\Core\Mail\AuthMode`) because some legitimate senders (e.g. an LMS sending through the school's own SMTP) are not aligned.
 - Whitelist entries: exact address, `@domain.tld` or `domain.tld` (exact domain, no subdomains).
+- PIN login limits: 5 failures per browser session (stored in the session), 50 per address as a circuit breaker, no IP limit by default (`PIN_IP_MAX_ATTEMPTS`), because a whole school shares one IP and one pupil must not lock out everybody. Every login also needs the captcha. The error text is identical for known and unknown addresses.
 - Student sessions store `address_id` + a fingerprint of the current PIN hash; a new PIN or an expired PIN ends the session on the next request.
 - Webhook signature: `X-Lettermint-Signature: t=<unix>,v1=<hex hmac-sha256 of "<t>.<raw body>">`, 300 s tolerance.
 - Locale: `App\Http\Middleware\SetLocale` (session choice, then Accept-Language, supported `de`,`en`, fallback `de`).

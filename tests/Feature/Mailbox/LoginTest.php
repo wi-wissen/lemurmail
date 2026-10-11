@@ -5,6 +5,7 @@ use App\Services\PinIssuer;
 use App\Support\Clock;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 const MB_DOMAIN = 'tmp-mail.example.org';
 
@@ -54,7 +55,14 @@ it('gives the identical error for unknown address, wrong PIN, expired PIN and fo
     expect($messages->unique())->toHaveCount(1)->and($messages->first())->toBe(__('mailbox.login_failed'));
 });
 
-it('blocks after 5 failures per address even for the right PIN, without revealing whether the address exists', function (string $local) {
+/** Starts a fresh browser session (new cookie) while keeping the client IP. */
+function newBrowserSession($test): void
+{
+    $test->flushSession();
+    session()->setId(Str::random(40));
+}
+
+it('blocks a browser session after 5 failures, even for the right PIN, without revealing whether the address exists', function (string $local) {
     Address::factory()->withPin('K7M4QX9R')->create(['local_part' => 'klasse7a-03']);
 
     for ($i = 0; $i < 5; $i++) {
@@ -66,13 +74,56 @@ it('blocks after 5 failures per address even for the right PIN, without revealin
     $this->get(route('mailbox.inbox'))->assertRedirect(route('home'));
 })->with(['klasse7a-03', 'does-not-exist']);
 
-it('blocks an IP after too many failures across addresses', function () {
+it('does not let one browser session block the other students on the same network', function () {
+    Address::factory()->withPin('K7M4QX9R')->create(['local_part' => 'klasse7a-03']);
+    Address::factory()->withPin('T3WD8HNP')->create(['local_part' => 'klasse7a-04']);
+
+    foreach (range(1, 8) as $i) { // one pupil hammering away on a school-wide IP
+        $last = loginAs($this, 'klasse7a-03', 'AAAAAAAA');
+    }
+    $last->assertSessionHasErrors(['address' => __('mailbox.too_many_attempts')]);
+
+    newBrowserSession($this);
+    loginAs($this, 'klasse7a-04', 'T3WD8HNP')->assertRedirect(route('mailbox.inbox'));
+
+    newBrowserSession($this);
+    loginAs($this, 'klasse7a-03', 'K7M4QX9R')->assertRedirect(route('mailbox.inbox')); // even the attacked address still works
+});
+
+it('stops a brute force on one address across many browser sessions', function () {
+    config(['lemurmail.pin_address_max_attempts' => 6]);
+    Address::factory()->withPin('K7M4QX9R')->create(['local_part' => 'klasse7a-03']);
+
+    foreach (range(1, 6) as $i) {
+        newBrowserSession($this);
+        loginAs($this, 'klasse7a-03', 'AAAAAAAA')->assertSessionHasErrors('address');
+    }
+    newBrowserSession($this);
+    loginAs($this, 'klasse7a-03', 'K7M4QX9R')->assertSessionHasErrors('address');
+    expect(session('errors')->first('address'))->toBe(__('mailbox.too_many_attempts'));
+});
+
+it('does not limit by IP address unless that is switched on', function () {
+    Address::factory()->withPin('K7M4QX9R')->create(['local_part' => 'klasse7a-03']);
+    expect(config('lemurmail.pin_ip_max_attempts'))->toBe(0);
+
+    foreach (range(1, 40) as $i) {
+        newBrowserSession($this);
+        loginAs($this, "nobody-$i", 'AAAAAAAA');
+    }
+    newBrowserSession($this);
+    loginAs($this, 'klasse7a-03', 'K7M4QX9R')->assertRedirect(route('mailbox.inbox'));
+});
+
+it('limits by IP address when configured', function () {
     config(['lemurmail.pin_ip_max_attempts' => 6]);
     Address::factory()->withPin('K7M4QX9R')->create(['local_part' => 'klasse7a-03']);
 
     foreach (range(1, 6) as $i) {
+        newBrowserSession($this);
         loginAs($this, "nobody-$i", 'AAAAAAAA');
     }
+    newBrowserSession($this);
     loginAs($this, 'klasse7a-03', 'K7M4QX9R')->assertSessionHasErrors('address');
     expect(session('errors')->first('address'))->toBe(__('mailbox.too_many_attempts'));
 });
@@ -80,6 +131,7 @@ it('blocks an IP after too many failures across addresses', function () {
 it('does not count successful logins against the limit', function () {
     Address::factory()->withPin('K7M4QX9R')->create(['local_part' => 'klasse7a-03']);
     foreach (range(1, 8) as $i) {
+        newBrowserSession($this);
         loginAs($this, 'klasse7a-03', 'K7M4QX9R')->assertRedirect(route('mailbox.inbox'));
     }
 });

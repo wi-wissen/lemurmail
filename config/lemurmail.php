@@ -4,6 +4,10 @@ return [
     // Domain of the temporary mailboxes (the app's own subdomain).
     'mail_domain' => env('MAIL_DOMAIN', 'tmp-mail.example.org'),
 
+    // How strictly the sender of a whitelisted mail must be authenticated: aligned (default) | authenticated | off.
+    // See App\Core\Mail\AuthMode. Relax it if mail of a legitimate service does not arrive.
+    'inbound_auth' => env('INBOUND_AUTH_MODE', 'aligned'),
+
     'webhook_secret' => env('LETTERMINT_WEBHOOK_SECRET'),
     'webhook_tolerance' => 300,
 
@@ -25,9 +29,12 @@ return [
     // Validity of a single regenerated PIN when its group has no running lesson.
     'single_pin_seconds' => 45 * 60,
 
-    // PIN brute-force protection.
-    'pin_max_attempts' => 5,        // per address (and input) and IP
-    'pin_ip_max_attempts' => 30,    // per IP over all addresses (a whole class may share one school IP)
+    // PIN brute-force protection. Every login also needs the Friendly Captcha.
+    // Failures are counted per browser session and, as a high circuit breaker, per address. A per-IP limit is
+    // OFF by default (0): a whole school often shares one IP and one pupil must not lock out everybody.
+    'pin_max_attempts' => 5,            // failures per browser session
+    'pin_address_max_attempts' => 50,   // failures per address over all sessions
+    'pin_ip_max_attempts' => (int) env('PIN_IP_MAX_ATTEMPTS', 0), // 0 = no IP limit
     'pin_decay_seconds' => 15 * 60,
 
     // Legal pages of the operator (full URLs). The footer links only appear when set.

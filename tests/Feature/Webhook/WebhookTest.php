@@ -200,3 +200,18 @@ it('does not write mail content to the log', function () {
     Log::shouldNotHaveReceived('info', fn ($m, $c = []) => str_contains(json_encode([$m, $c]), 'confirm?t=1'));
     expect(true)->toBeTrue();
 });
+
+it('follows the configured authentication mode', function (string $mode, bool $stored) {
+    config(['lemurmail.inbound_auth' => $mode]);
+    addressWithWhitelist();
+    // passes SPF for the sending service's mail server, but nothing is aligned with the From domain
+    $payload = inboundPayload('klasse7a-03@'.MAIL_DOM, ['data' => ['authentication_results' => [
+        'spf' => ['result' => 'pass', 'domain' => 'mailserver.schule.example'],
+        'dkim' => ['result' => 'none', 'domain' => null],
+        'dmarc' => ['result' => 'none', 'domain' => null],
+    ]]]);
+
+    postWebhook($this, $payload)->assertOk();
+
+    expect(Message::count())->toBe($stored ? 1 : 0);
+})->with([['aligned', false], ['authenticated', true], ['off', true], ['garbage', false]]);

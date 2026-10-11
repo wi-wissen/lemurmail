@@ -27,6 +27,8 @@ services:
             MAIL_DOMAIN: "${MAIL_DOMAIN:?set MAIL_DOMAIN, the app's own subdomain}"
             LETTERMINT_WEBHOOK_SECRET: "${LETTERMINT_WEBHOOK_SECRET:?set LETTERMINT_WEBHOOK_SECRET}"
             ADMIN_EMAIL: "${ADMIN_EMAIL:-}"
+            INBOUND_AUTH_MODE: "${INBOUND_AUTH_MODE:-aligned}"
+            PIN_IP_MAX_ATTEMPTS: "${PIN_IP_MAX_ATTEMPTS:-0}"
             # Legal pages of the operator (full URLs); the footer links are hidden when empty
             IMPRINT_URL: "${IMPRINT_URL:-}"
             PRIVACY_URL: "${PRIVACY_URL:-}"

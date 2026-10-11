@@ -21,13 +21,26 @@ class LoginController extends Controller
     public function store(LoginRequest $request, RateLimiter $limiter): RedirectResponse
     {
         [$local, $domainMatches] = $this->splitAddress((string) $request->input('address', ''));
-        $ip = $request->ip();
-        $addressKey = 'mailbox-login:'.sha1($local.'|'.$ip);
-        $ipKey = 'mailbox-login-ip:'.$ip;
+        // Counters: failures recorded in this browser session, the address over all sessions (circuit
+        // breaker) and, only if configured, the IP. The limit message is the same for known and unknown addresses.
+        $now = Clock::now();
+        $decay = config('lemurmail.pin_decay_seconds');
+        $sessionFailures = array_values(array_filter(
+            (array) $request->session()->get('mailbox.failures', []),
+            fn ($at) => is_int($at) && $at > $now - $decay,
+        ));
+        $limits = ['mailbox-login:address:'.sha1($local) => config('lemurmail.pin_address_max_attempts')];
+        if (config('lemurmail.pin_ip_max_attempts') > 0) {
+            $limits['mailbox-login:ip:'.$request->ip()] = config('lemurmail.pin_ip_max_attempts');
+        }
 
-        if ($limiter->tooManyAttempts($addressKey, config('lemurmail.pin_max_attempts'))
-            || $limiter->tooManyAttempts($ipKey, config('lemurmail.pin_ip_max_attempts'))) {
+        if (count($sessionFailures) >= config('lemurmail.pin_max_attempts')) {
             return $this->failed(__('mailbox.too_many_attempts'));
+        }
+        foreach ($limits as $key => $max) {
+            if ($limiter->tooManyAttempts($key, $max)) {
+                return $this->failed(__('mailbox.too_many_attempts'));
+            }
         }
 
         $address = $domainMatches && LocalPart::isValid($local)
@@ -42,18 +55,19 @@ class LoginController extends Controller
 
         if ($address !== null && $pinMatches && $address->pinIsValid(Clock::now())) {
             $request->session()->regenerate();
+            $request->session()->forget('mailbox.failures');
             $request->session()->put([
                 'mailbox.address_id' => $address->id,
                 'mailbox.fingerprint' => $address->pinFingerprint(),
             ]);
-            $limiter->clear($addressKey);
 
             return redirect()->route('mailbox.inbox');
         }
 
-        $decay = config('lemurmail.pin_decay_seconds');
-        $limiter->hit($addressKey, $decay);
-        $limiter->hit($ipKey, $decay);
+        $request->session()->put('mailbox.failures', [...$sessionFailures, $now]);
+        foreach (array_keys($limits) as $key) {
+            $limiter->hit($key, $decay);
+        }
 
         return $this->failed(__('mailbox.login_failed'));
     }

@@ -10,6 +10,9 @@ namespace App\Core\Mail;
  * "mail.example.org" is aligned with "example.org" and vice versa; "evil-example.org" is not).
  * Missing auth data (null) never authenticates.
  * The whitelist is checked first: not listed => NotAllowed even if unauthenticated.
+ *
+ * AuthMode::Authenticated relaxes (2) to "any of SPF, DKIM, DMARC passed, for any domain";
+ * AuthMode::Off skips (2) completely.
  */
 final class SenderPolicy
 {
@@ -19,9 +22,20 @@ final class SenderPolicy
         ?AuthResult $spf,
         ?AuthResult $dkim,
         ?AuthResult $dmarc,
+        AuthMode $mode = AuthMode::Aligned,
     ): SenderDecision {
         if (! $whitelist->matches($fromEmail)) {
             return SenderDecision::NotAllowed;
+        }
+
+        if ($mode === AuthMode::Off) {
+            return SenderDecision::Accept;
+        }
+
+        if ($mode === AuthMode::Authenticated) {
+            $anyPass = array_filter([$spf, $dkim, $dmarc], fn (?AuthResult $r) => $r !== null && $r->passed());
+
+            return $anyPass !== [] ? SenderDecision::Accept : SenderDecision::Unauthenticated;
         }
 
         [, $fromDomain] = explode('@', strtolower(trim($fromEmail)), 2);
