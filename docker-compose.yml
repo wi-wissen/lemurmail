@@ -1,0 +1,53 @@
+# Production example: one container (FrankenPHP + Laravel), SQLite in a named volume.
+# Copy this file to the server, put the variables below into a .env file next to it
+# (Compose reads it automatically), then: docker compose up -d
+#
+# The app speaks plain HTTP on 8080 and binds to 127.0.0.1 only. Put a reverse proxy
+# (Caddy, nginx, Traefik, ...) in front that terminates TLS and forwards to 127.0.0.1:8080,
+# e.g. with Caddy:  tmp-mail.example.org { reverse_proxy 127.0.0.1:8080 }
+# Mail arrives via MX (Lettermint inbound), not via this proxy.
+
+services:
+    lemurmail:
+        image: ghcr.io/wi-wissen/lemurmail:latest
+        init: true
+        restart: unless-stopped
+        ports:
+            - "127.0.0.1:8080:8080"
+        environment:
+            # App
+            APP_KEY: "${APP_KEY:?set APP_KEY, e.g. docker run --rm ghcr.io/wi-wissen/lemurmail:latest php artisan key:generate --show}"
+            APP_URL: "${APP_URL:?set APP_URL, e.g. https://tmp-mail.example.org}"
+            APP_TIMEZONE: "${APP_TIMEZONE:-Europe/Berlin}"
+            APP_LOCALE: "${APP_LOCALE:-de}"
+            APP_FALLBACK_LOCALE: "${APP_FALLBACK_LOCALE:-de}"
+            SESSION_SECURE_COOKIE: "${SESSION_SECURE_COOKIE:-true}"
+
+            # Lemur Mail
+            MAIL_DOMAIN: "${MAIL_DOMAIN:?set MAIL_DOMAIN, the app's own subdomain}"
+            LETTERMINT_WEBHOOK_SECRET: "${LETTERMINT_WEBHOOK_SECRET:?set LETTERMINT_WEBHOOK_SECRET}"
+            ADMIN_EMAIL: "${ADMIN_EMAIL:-}"
+            MAIL_RETENTION_DAYS: "${MAIL_RETENTION_DAYS:-7}"
+            DEFAULT_ADDRESS_LIMIT: "${DEFAULT_ADDRESS_LIMIT:-200}"
+            MAX_LESSON_MINUTES: "${MAX_LESSON_MINUTES:-720}"
+
+            # Friendly Captcha (v1 API)
+            FRIENDLY_CAPTCHA_ENABLED: "${FRIENDLY_CAPTCHA_ENABLED:-true}"
+            FRIENDLY_CAPTCHA_SITEKEY: "${FRIENDLY_CAPTCHA_SITEKEY:-}"
+            FRIENDLY_CAPTCHA_SECRET: "${FRIENDLY_CAPTCHA_SECRET:-}"
+
+            # Outgoing SMTP for verification and notification mails (not for the inbox)
+            MAIL_MAILER: "${MAIL_MAILER:-smtp}"
+            MAIL_HOST: "${MAIL_HOST:?set MAIL_HOST, the SMTP server}"
+            MAIL_PORT: "${MAIL_PORT:-587}"
+            MAIL_SCHEME: "${MAIL_SCHEME:-null}"
+            MAIL_USERNAME: "${MAIL_USERNAME:-}"
+            MAIL_PASSWORD: "${MAIL_PASSWORD:-}"
+            MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS:?set MAIL_FROM_ADDRESS}"
+            MAIL_FROM_NAME: "${MAIL_FROM_NAME:-Lemur Mail}"
+        volumes:
+            # SQLite database and anything else the app persists
+            - lemurmail-data:/data
+
+volumes:
+    lemurmail-data:

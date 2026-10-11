@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lemur Mail – Wegwerf-Postfächer für den Unterricht</title>
+<meta name="description" content="Lemur Mail ist ein Postfach-Dienst, der nur empfangen kann: Lehrer:innen legen Adressen an, Schüler:innen lesen Bestätigungs- und Passwort-Mails.">
+<link rel="canonical" href="https://lemurmail.wi7.net/">
+<link rel="alternate" hreflang="en" href="https://lemurmail.wi7.net/en/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+<a class="wordmark" href="./">Lemur <span>Mail</span></a>
+<nav aria-label="Navigation"><a href="#so">So funktioniert es</a><a href="#sicher">Sicherheit</a><a href="#lemur">Der Name</a><a href="https://github.com/wi-wissen/lemurmail">Quelltext auf GitHub</a><span class="lang"><b aria-current="true">DE</b> <a href="en/" hreflang="en" lang="en">EN</a></span></nav>
+</header>
+<main>
+<div class="hero">
+<div>
+<h1>Wegwerf-Postfächer für den Unterricht</h1>
+<p class="lead">Lemur Mail ist ein Postfach, das nur empfangen kann. Lehrer:innen legen Adressen für die ganze Klasse an. Schüler:innen melden sich mit Adresse und PIN an und lesen dort die Bestätigungs- und Passwort-Mails externer Dienste.</p>
+<div class="actions"><a class="btn" href="https://github.com/wi-wissen/lemurmail">Quelltext ansehen</a><a class="btn ghost" href="#so">So funktioniert es</a></div>
+</div>
+<div class="pinbox" aria-label="Beamer-Ansicht (Beispieldaten)"><small>Beamer-Ansicht (Beispieldaten) · Gültig bis 10:45</small>
+<div class="row"><span>klasse7a-01</span><b>T3WD 8HNP</b></div>
+<div class="row"><span>klasse7a-02</span><b>9FQE 4XCA</b></div>
+<div class="row"><span>klasse7a-03</span><b>K7M4 QX9R</b></div></div>
+</div>
+<section id="so"><h2>So funktioniert es</h2><div class="cols steps"><div class="card step"><h3>Adressen anlegen</h3><p>Mit einem Präfix und einer Anzahl entstehen Adressen wie klasse7a-01 bis klasse7a-30. Du bestimmst, welche Absender erlaubt sind.</p></div><div class="card step"><h3>Stunde starten</h3><p>Beim Start bekommt jede Adresse eine neue PIN. Adressen und PINs stehen groß am Beamer, bis die Stunde endet.</p></div><div class="card step"><h3>Mails lesen</h3><p>Schüler:innen melden sich mit Adresse und PIN an. Neue Mails erscheinen von selbst, danach verliert die PIN ihre Gültigkeit.</p></div></div></section>
+<section id="sicher"><h2>Sicherheit und Datenschutz</h2><ul class="facts"><li>Nur Empfangen: Es kann nichts gesendet werden.</li><li>Mails werden spätestens nach 7 Tagen gelöscht.</li><li>HTML-Mails laufen in einer abgeschotteten Sandbox, ohne Skripte und ohne Bilder von fremden Servern.</li><li>Nur Mails erlaubter Absender werden gespeichert, und nur wenn sie echt sind (SPF, DKIM, DMARC).</li><li>PINs sind befristet und werden gegen Raten gesperrt, mit Friendly Captcha geschützt.</li><li>Open Source, selbst betreibbar als Docker-Image. Keine Werbung, kein Tracking.</li></ul></section>
+<section id="lemur"><div class="lemur"><svg viewBox="0 0 160 160" role="img" aria-label="Ringelschwanz-Lemur, das Maskottchen"><circle cx="80" cy="80" r="78" fill="#E3F1EC"/>
+<path d="M118 120c26-10 34-40 18-58-12-14-30-8-28 8 2 14 22 14 14 34-4 8-14 12-24 10" fill="none" stroke="#16211D" stroke-width="10" stroke-linecap="round"/>
+<path d="M118 120c26-10 34-40 18-58" fill="none" stroke="#F5F7F6" stroke-width="10" stroke-linecap="round" stroke-dasharray="8 12"/>
+<ellipse cx="72" cy="96" rx="34" ry="38" fill="#9DB5AB"/><ellipse cx="72" cy="106" rx="20" ry="24" fill="#F5F7F6"/>
+<circle cx="72" cy="58" r="30" fill="#9DB5AB"/><circle cx="52" cy="34" r="9" fill="#9DB5AB"/><circle cx="92" cy="34" r="9" fill="#9DB5AB"/>
+<ellipse cx="72" cy="64" rx="17" ry="14" fill="#F5F7F6"/>
+<ellipse cx="58" cy="54" rx="11" ry="13" fill="#16211D"/><ellipse cx="86" cy="54" rx="11" ry="13" fill="#16211D"/>
+<circle cx="58" cy="54" r="5" fill="#F2B36B"/><circle cx="86" cy="54" r="5" fill="#F2B36B"/>
+<ellipse cx="72" cy="69" rx="5" ry="4" fill="#16211D"/></svg><div><h2>Warum Lemur?</h2><p>Der Name geht auf die römischen <em>lemures</em> zurück, die Schattengeister der Verstorbenen. Ein Wegwerf-Postfach ist ein bisschen so: Es meldet sich noch einmal, und dann ist Ruhe. Das Maskottchen ist ein Ringelschwanz-Lemur.</p></div></div></section>
+<section><p class="note">Hinweis: Das Projekt wird vom Verein betrieben. Impressum und Datenschutzerklärung der Betreiber-Instanz stehen auf der jeweiligen Instanz, nicht auf dieser Seite.</p></section>
+</main>
+</div>
+<footer><div class="wrap"><a class="wordmark" href="./" style="font-size:18px">Lemur <span>Mail</span></a><span>Lizenz folgt</span><a href="https://github.com/wi-wissen/lemurmail">GitHub</a><span class="spacer"></span><span class="lang"><b>DE</b> <a href="en/" hreflang="en" lang="en">EN</a></span></div></footer>
+</body>
+</html>

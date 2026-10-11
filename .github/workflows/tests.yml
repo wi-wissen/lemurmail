@@ -2,48 +2,59 @@ name: Tests
 
 on:
   push:
-    branches:
-      - master
-      - '*.x'
   pull_request:
-  schedule:
-    - cron: '0 0 * * *'
 
 permissions:
   contents: read
 
 jobs:
   tests:
+    name: PHP 8.4 / Node 22
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [8.3, 8.4, 8.5]
-
-    name: PHP ${{ matrix.php }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
+        uses: actions/checkout@v4
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+          php-version: '8.4'
+          extensions: sqlite3, pdo_sqlite, intl
           coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: composer-${{ runner.os }}-php8.4-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-php8.4-
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
-      - name: Copy environment file
-        run: cp .env.example .env
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
 
-      - name: Generate app key
-        run: php artisan key:generate
+      - name: Install npm dependencies
+        run: npm ci
 
-      - name: Execute tests
-        run: php artisan test
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Static checks
+        run: composer typecheck
+
+      - name: PHP tests (Pest)
+        run: vendor/bin/pest
+
+      - name: JS core tests (Vitest)
+        run: npx vitest run

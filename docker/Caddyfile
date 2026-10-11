@@ -1,0 +1,13 @@
+# FrankenPHP/Caddy inside the container. Plain HTTP on 8080; the reverse proxy in front terminates TLS.
+{
+	admin off
+	auto_https off
+	frankenphp
+	order php_server before file_server
+}
+
+:8080 {
+	root * /app/public
+	encode zstd br gzip
+	php_server
+}

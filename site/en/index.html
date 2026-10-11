@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lemur Mail – throwaway mailboxes for the classroom</title>
+<meta name="description" content="Lemur Mail is a receive-only mailbox service: teachers create addresses, students read confirmation and password-reset mails.">
+<link rel="canonical" href="https://lemurmail.wi7.net/en/">
+<link rel="alternate" hreflang="de" href="https://lemurmail.wi7.net/">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+<a class="wordmark" href="./">Lemur <span>Mail</span></a>
+<nav aria-label="Navigation"><a href="#how">How it works</a><a href="#safe">Security</a><a href="#lemur">The name</a><a href="https://github.com/wi-wissen/lemurmail">Source on GitHub</a><span class="lang"><b aria-current="true">EN</b> <a href="../" hreflang="de" lang="de">DE</a></span></nav>
+</header>
+<main>
+<div class="hero">
+<div>
+<h1>Throwaway mailboxes for the classroom</h1>
+<p class="lead">Lemur Mail is a mailbox that can only receive. Teachers create addresses for a whole class. Students sign in with an address and a PIN and read the confirmation and password-reset mails of external services.</p>
+<div class="actions"><a class="btn" href="https://github.com/wi-wissen/lemurmail">View the source</a><a class="btn ghost" href="#how">How it works</a></div>
+</div>
+<div class="pinbox" aria-label="Beamer view (sample data)"><small>Beamer view (sample data) · Valid until 10:45</small>
+<div class="row"><span>klasse7a-01</span><b>T3WD 8HNP</b></div>
+<div class="row"><span>klasse7a-02</span><b>9FQE 4XCA</b></div>
+<div class="row"><span>klasse7a-03</span><b>K7M4 QX9R</b></div></div>
+</div>
+<section id="how"><h2>How it works</h2><div class="cols steps"><div class="card step"><h3>Create addresses</h3><p>A prefix and a number give you addresses like klasse7a-01 to klasse7a-30. You decide which senders are allowed.</p></div><div class="card step"><h3>Start a lesson</h3><p>Every address gets a fresh PIN. Addresses and PINs show up large on the projector until the lesson ends.</p></div><div class="card step"><h3>Read the mail</h3><p>Students sign in with address and PIN. New mail appears by itself, and the PIN stops working afterwards.</p></div></div></section>
+<section id="safe"><h2>Security and privacy</h2><ul class="facts"><li>Receive only: nothing can be sent.</li><li>Mail is deleted after 7 days at the latest.</li><li>HTML mail runs in a locked-down sandbox, without scripts and without images from foreign servers.</li><li>Only mail from allowed senders is stored, and only if it is authentic (SPF, DKIM, DMARC).</li><li>PINs expire, guessing is rate-limited and protected by Friendly Captcha.</li><li>Open source, self-hostable as a Docker image. No ads, no tracking.</li></ul></section>
+<section id="lemur"><div class="lemur"><svg viewBox="0 0 160 160" role="img" aria-label="A ring-tailed lemur, the mascot"><circle cx="80" cy="80" r="78" fill="#E3F1EC"/>
+<path d="M118 120c26-10 34-40 18-58-12-14-30-8-28 8 2 14 22 14 14 34-4 8-14 12-24 10" fill="none" stroke="#16211D" stroke-width="10" stroke-linecap="round"/>
+<path d="M118 120c26-10 34-40 18-58" fill="none" stroke="#F5F7F6" stroke-width="10" stroke-linecap="round" stroke-dasharray="8 12"/>
+<ellipse cx="72" cy="96" rx="34" ry="38" fill="#9DB5AB"/><ellipse cx="72" cy="106" rx="20" ry="24" fill="#F5F7F6"/>
+<circle cx="72" cy="58" r="30" fill="#9DB5AB"/><circle cx="52" cy="34" r="9" fill="#9DB5AB"/><circle cx="92" cy="34" r="9" fill="#9DB5AB"/>
+<ellipse cx="72" cy="64" rx="17" ry="14" fill="#F5F7F6"/>
+<ellipse cx="58" cy="54" rx="11" ry="13" fill="#16211D"/><ellipse cx="86" cy="54" rx="11" ry="13" fill="#16211D"/>
+<circle cx="58" cy="54" r="5" fill="#F2B36B"/><circle cx="86" cy="54" r="5" fill="#F2B36B"/>
+<ellipse cx="72" cy="69" rx="5" ry="4" fill="#16211D"/></svg><div><h2>Why a lemur?</h2><p>The name goes back to the Roman <em>lemures</em>, the shadow spirits of the dead. A throwaway mailbox is a bit like that: it speaks up once more, and then it is quiet. The mascot is a ring-tailed lemur.</p></div></div></section>
+<section><p class="note">Note: the project is run by the association. Imprint and privacy policy of an instance are published on that instance, not on this page.</p></section>
+</main>
+</div>
+<footer><div class="wrap"><a class="wordmark" href="./" style="font-size:18px">Lemur <span>Mail</span></a><span>License to be decided</span><a href="https://github.com/wi-wissen/lemurmail">GitHub</a><span class="spacer"></span><span class="lang"><b>EN</b> <a href="../" hreflang="de" lang="de">DE</a></span></div></footer>
+</body>
+</html>
