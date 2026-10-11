@@ -29,7 +29,6 @@ return [
     'beamer_intro' => 'Anmelden auf :domain mit Adresse und PIN',
     'valid_until' => 'Gültig bis',
     'beamer_remaining' => 'noch',
-    'beamer_footer' => 'Diese Seite sehen nur Lehrer:innen. Die PINs verfallen zur angezeigten Zeit.',
     'beamer_empty' => 'Diese Gruppe hat gerade keine gültigen PINs.',
     'font_smaller' => 'Schrift kleiner',
     'font_larger' => 'Schrift größer',

@@ -1,6 +1,10 @@
 <x-mailbox-layout>
     <x-slot:actions>
-        <a href="{{ route('login') }}" class="text-base text-ink underline">{{ __('mailbox.teacher_login') }}</a>
+        <span class="text-base text-ink-soft">{{ __('mailbox.teacher_prompt') }}</span>
+        <a href="{{ route('login') }}"
+           class="inline-flex min-h-[44px] items-center rounded-lg border-[1.5px] border-line-strong bg-surface px-5 text-base font-bold text-ink hover:bg-paper hover:text-ink">{{ __('mailbox.teacher_login') }}</a>
+        <a href="{{ route('register') }}"
+           class="inline-flex min-h-[44px] items-center rounded-lg bg-accent px-5 text-base font-bold text-white hover:bg-accent-hover hover:text-white">{{ __('mailbox.teacher_register') }}</a>
     </x-slot:actions>
 
     <div class="flex flex-1 items-center justify-center px-4 pb-16 pt-6">

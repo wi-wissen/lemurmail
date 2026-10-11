@@ -59,7 +59,8 @@
                         <span x-text="detail ? clock(detail.received_at) : ''"></span>
                     </div>
                 </div>
-                <x-danger-button type="button" x-show="detail" @click="remove()">{{ __('common.delete') }}</x-danger-button>
+                <button type="button" x-show="detail" @click="remove()"
+                        class="min-h-[44px] px-3 text-base font-bold text-ink-soft underline hover:text-danger focus-visible:text-danger">{{ __('common.delete') }}</button>
             </div>
 
             <div class="flex flex-wrap items-center gap-3" x-show="detail">

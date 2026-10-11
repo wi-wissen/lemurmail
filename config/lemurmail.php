@@ -19,6 +19,9 @@ return [
     'max_lesson_seconds' => (int) env('MAX_LESSON_MINUTES', 720) * 60,
     'extend_seconds' => 15 * 60,
 
+    // Longest validity when a lesson/PINs are started with an end DATE (there is deliberately no unlimited option).
+    'max_pin_seconds' => (int) env('MAX_PIN_DAYS', 365) * 86400,
+
     // Validity of a single regenerated PIN when its group has no running lesson.
     'single_pin_seconds' => 45 * 60,
 
@@ -26,6 +29,10 @@ return [
     'pin_max_attempts' => 5,        // per address (and input) and IP
     'pin_ip_max_attempts' => 30,    // per IP over all addresses (a whole class may share one school IP)
     'pin_decay_seconds' => 15 * 60,
+
+    // Legal pages of the operator (full URLs). The footer links only appear when set.
+    'imprint_url' => env('IMPRINT_URL'),
+    'privacy_url' => env('PRIVACY_URL'),
 
     'locales' => ['de', 'en'],
     'fallback_locale' => 'de',

@@ -122,6 +122,9 @@ Variables marked *required* must be set in production. The values in `.env.examp
 | `MAIL_DOMAIN` | `tmp-mail.example.org` (*required*) | Domain of the temporary addresses (the app's own subdomain). |
 | `LETTERMINT_WEBHOOK_SECRET` | – (*required*) | Signing secret of the Lettermint inbound webhook. |
 | `ADMIN_EMAIL` | – | Receives "new teacher waiting for approval" mails. |
+| `IMPRINT_URL` | – | Full URL of the operator's imprint. The footer link only appears when set. |
+| `PRIVACY_URL` | – | Full URL of the operator's privacy policy. The footer link only appears when set. |
+| `MAX_PIN_DAYS` | `365` | Longest PIN validity when a teacher starts a lesson with an end date. |
 | `MAIL_RETENTION_DAYS` | `7` | Retention of stored mails in days. Hard-capped at 7. |
 | `DEFAULT_ADDRESS_LIMIT` | `200` | Default cap of addresses per teacher. |
 | `MAX_LESSON_MINUTES` | `720` | Longest allowed lesson or PIN validity in minutes. |

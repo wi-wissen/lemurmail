@@ -29,7 +29,6 @@ return [
     'beamer_intro' => 'Sign in at :domain with address and PIN',
     'valid_until' => 'Valid until',
     'beamer_remaining' => 'left',
-    'beamer_footer' => 'Only teachers see this page. The PINs expire at the time shown.',
     'beamer_empty' => 'This group has no valid PINs right now.',
     'font_smaller' => 'Smaller text',
     'font_larger' => 'Larger text',

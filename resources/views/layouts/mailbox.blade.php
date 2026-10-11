@@ -7,7 +7,10 @@
                 <span class="text-xl"><x-wordmark /></span>
                 @isset($meta){{ $meta }}@endisset
             </div>
-            @isset($actions)<div class="flex flex-wrap items-center gap-4">{{ $actions }}</div>@endisset
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+                <x-locale-switch />
+                @isset($actions)<div class="flex flex-wrap items-center gap-4">{{ $actions }}</div>@endisset
+            </div>
         </header>
         <main class="flex flex-1 flex-col">
             {{ $slot }}

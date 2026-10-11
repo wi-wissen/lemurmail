@@ -51,7 +51,7 @@
                                                 <form method="POST" action="{{ route('addresses.destroy', $address) }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="min-h-[40px] px-3 text-[15px] font-bold text-danger underline">{{ __('teacher.addresses.delete') }}</button>
+                                                    <button type="submit" class="min-h-[40px] px-3 text-[15px] font-bold text-ink-soft underline hover:text-danger focus-visible:text-danger">{{ __('teacher.addresses.delete') }}</button>
                                                 </form>
                                             </div>
                                         </td>
@@ -69,7 +69,7 @@
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit" aria-label="{{ __('teacher.senders.remove_label', ['pattern' => $rule->pattern]) }}"
-                                                                    class="font-sans text-[14px] font-bold text-danger underline">{{ __('teacher.senders.remove') }}</button>
+                                                                    class="font-sans text-[14px] font-bold text-ink-soft underline hover:text-danger focus-visible:text-danger">{{ __('teacher.senders.remove') }}</button>
                                                             </form>
                                                         </div>
                                                     @empty
@@ -143,7 +143,7 @@
                         @csrf
                         @method('DELETE')
                         <p class="text-[15px] leading-snug text-ink-soft">{{ __('teacher.groups.delete_hint') }}</p>
-                        <button type="submit" class="min-h-[44px] self-start text-base font-bold text-danger underline">{{ __('teacher.groups.delete') }}</button>
+                        <button type="submit" class="min-h-[44px] self-start text-base font-bold text-ink-soft underline hover:text-danger focus-visible:text-danger">{{ __('teacher.groups.delete') }}</button>
                     </form>
                 </section>
             </aside>

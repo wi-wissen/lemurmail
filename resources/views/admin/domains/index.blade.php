@@ -60,7 +60,7 @@
                             <form method="POST" action="{{ route('admin.domains.freemail.destroy', $blockedDomain) }}" class="shrink-0">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-[15px] font-bold text-danger underline hover:text-danger-ink" aria-label="{{ __('admin.domains.remove').' '.$blockedDomain->domain }}">{{ __('admin.domains.remove') }}</button>
+                                <button type="submit" class="text-[15px] font-bold text-ink-soft underline hover:text-danger focus-visible:text-danger" aria-label="{{ __('admin.domains.remove').' '.$blockedDomain->domain }}">{{ __('admin.domains.remove') }}</button>
                             </form>
                         </li>
                     @endforeach

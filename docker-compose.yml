@@ -27,6 +27,9 @@ services:
             MAIL_DOMAIN: "${MAIL_DOMAIN:?set MAIL_DOMAIN, the app's own subdomain}"
             LETTERMINT_WEBHOOK_SECRET: "${LETTERMINT_WEBHOOK_SECRET:?set LETTERMINT_WEBHOOK_SECRET}"
             ADMIN_EMAIL: "${ADMIN_EMAIL:-}"
+            # Legal pages of the operator (full URLs); the footer links are hidden when empty
+            IMPRINT_URL: "${IMPRINT_URL:-}"
+            PRIVACY_URL: "${PRIVACY_URL:-}"
             MAIL_RETENTION_DAYS: "${MAIL_RETENTION_DAYS:-7}"
             DEFAULT_ADDRESS_LIMIT: "${DEFAULT_ADDRESS_LIMIT:-200}"
             MAX_LESSON_MINUTES: "${MAX_LESSON_MINUTES:-720}"

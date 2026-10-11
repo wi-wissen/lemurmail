@@ -30,6 +30,7 @@
         <env name="MAIL_DOMAIN" value="tmp-mail.example.org"/>
         <env name="LETTERMINT_WEBHOOK_SECRET" value="test-secret"/>
         <env name="MAIL_RETENTION_DAYS" value="7"/>
+        <env name="MAX_PIN_DAYS" value="90"/>
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>

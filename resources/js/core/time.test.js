@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clockOffset, formatClock, formatRemaining, remainingMinutes, secondsLeft, serverNow } from './time.js';
+import { clockOffset, formatClock, formatRemaining, remainingDays, remainingMinutes, secondsLeft, serverNow } from './time.js';
 
 describe('formatRemaining', () => {
     it('formats minutes and seconds', () => {
@@ -54,5 +54,20 @@ describe('formatClock', () => {
     });
     it('wraps around midnight', () => {
         expect(formatClock(1791763200 - 60, 120)).toBe('01:59');
+    });
+});
+
+describe('remainingDays', () => {
+    it('rounds up to whole days', () => {
+        expect(remainingDays(86400)).toBe(1);
+        expect(remainingDays(86401)).toBe(2);
+        expect(remainingDays(29 * 86400 + 1)).toBe(30);
+        expect(remainingDays(1)).toBe(1);
+    });
+    it('is zero for nothing left or bad input', () => {
+        expect(remainingDays(0)).toBe(0);
+        expect(remainingDays(-5)).toBe(0);
+        expect(remainingDays(NaN)).toBe(0);
+        expect(remainingDays(Infinity)).toBe(0);
     });
 });

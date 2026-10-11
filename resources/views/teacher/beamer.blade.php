@@ -34,8 +34,7 @@
             @endforelse
         </div>
 
-        <footer class="mt-auto flex flex-wrap items-center justify-between gap-4">
-            <span class="text-[17px] text-beamer-muted">{{ __('lesson.beamer_footer') }}</span>
+        <footer class="mt-auto flex flex-wrap items-center justify-end gap-4">
             <div class="flex flex-wrap gap-2.5">
                 <button type="button" class="inline-flex min-h-[44px] items-center rounded-lg border-[1.5px] border-beamer-muted px-4 text-base font-bold text-beamer-text hover:bg-beamer-row" @click="changeScale(-1)">{{ __('lesson.font_smaller') }}</button>
                 <button type="button" class="inline-flex min-h-[44px] items-center rounded-lg border-[1.5px] border-beamer-muted px-4 text-base font-bold text-beamer-text hover:bg-beamer-row" @click="changeScale(1)">{{ __('lesson.font_larger') }}</button>

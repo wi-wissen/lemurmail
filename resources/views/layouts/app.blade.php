@@ -18,7 +18,8 @@
                     @endauth
                 </div>
                 @auth
-                    <div class="flex items-center gap-4 text-base text-ink-soft">
+                    <div class="flex flex-wrap items-center gap-4 text-base text-ink-soft">
+                        <x-locale-switch />
                         <span>{{ auth()->user()->email }}</span>
                         <form method="POST" action="{{ route('logout') }}">@csrf
                             <button type="submit" class="text-accent underline hover:text-accent-hover">{{ __('common.logout') }}</button>

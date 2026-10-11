@@ -68,3 +68,13 @@ export function formatClock(unixSeconds, utcOffsetMinutes) {
     const local = (((unixSeconds + utcOffsetMinutes * 60) % DAY) + DAY) % DAY;
     return `${pad(Math.floor(local / 3600))}:${pad(Math.floor((local % 3600) / 60))}`;
 }
+
+/**
+ * Whole days left, rounded up ("noch 29 Tage"); 0 for <= 0 or non-finite input.
+ * @param {number} seconds
+ * @returns {number}
+ */
+export function remainingDays(seconds) {
+    if (!Number.isFinite(seconds) || seconds <= 0) return 0;
+    return Math.ceil(seconds / 86400);
+}

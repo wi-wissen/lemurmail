@@ -4,6 +4,7 @@ return [
     'app_name' => 'Lemur Mail',
     'receive_only' => 'Nur zum Empfangen, es kann nichts gesendet werden.',
     'imprint' => 'Impressum',
+    'legal' => 'Rechtliches',
     'privacy' => 'Datenschutz',
     'language' => 'Sprache',
     'main_navigation' => 'Hauptnavigation',

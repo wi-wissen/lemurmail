@@ -12,7 +12,7 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit" aria-label="{{ __('teacher.senders.remove_label', ['pattern' => $rule->pattern]) }}"
-                            class="rounded px-1.5 font-sans text-[14px] font-bold text-danger underline">{{ __('teacher.senders.remove') }}</button>
+                            class="rounded px-1.5 font-sans text-[14px] font-bold text-ink-soft underline hover:text-danger focus-visible:text-danger">{{ __('teacher.senders.remove') }}</button>
                     </form>
                 </li>
             @endforeach

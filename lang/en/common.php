@@ -4,6 +4,7 @@ return [
     'app_name' => 'Lemur Mail',
     'receive_only' => 'Receive only, nothing can be sent.',
     'imprint' => 'Imprint',
+    'legal' => 'Legal',
     'privacy' => 'Privacy',
     'language' => 'Language',
     'main_navigation' => 'Main navigation',
