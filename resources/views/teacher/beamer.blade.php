@@ -4,7 +4,7 @@
         data-ends-at="{{ $endsAt }}"
         data-server-now="{{ $now }}"
         x-bind:style="'--scale: ' + scale / 100"
-        class="flex min-h-screen flex-col gap-7 px-5 py-6 sm:px-14 sm:pb-7 sm:pt-10"
+        class="flex min-h-screen flex-col gap-5 px-5 py-6 sm:px-14 sm:pb-6 sm:pt-8"
     >
         <header class="flex flex-wrap items-end justify-between gap-8">
             <div class="flex flex-col gap-1.5">
@@ -22,9 +22,9 @@
             </div>
         </header>
 
-        <div class="grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
+        <div class="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2">
             @forelse ($pins as $row)
-                <div class="flex items-center justify-between gap-4 rounded-lg bg-beamer-row px-7 py-3">
+                <div class="flex items-center justify-between gap-4 rounded-lg bg-beamer-row px-7 py-2">
                     <span class="font-mono break-all" style="font-size: calc(2rem * var(--scale, 1))">{{ $row['local_part'] }}</span>
                     <span x-show="!hidePins" class="font-mono font-bold tracking-[0.12em] text-beamer-accent whitespace-nowrap" style="font-size: calc(2.625rem * var(--scale, 1))">{{ $row['pin'] }}</span>
                     <span x-show="hidePins" class="font-mono font-bold text-beamer-muted whitespace-nowrap" style="font-size: calc(2.625rem * var(--scale, 1))" aria-hidden="true">••••&nbsp;••••</span>

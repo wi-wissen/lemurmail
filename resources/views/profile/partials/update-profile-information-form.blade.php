@@ -4,9 +4,9 @@
         <p class="text-[17px] leading-snug text-ink-soft">{{ __('account.profile_email_text') }}</p>
     </header>
 
-    <form id="send-verification" method="post" action="{{ route('verification.send') }}">
-        @csrf
-    </form>
+    @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
+        <form id="send-verification" method="post" action="{{ route('verification.send') }}">@csrf</form>
+    @endif
 
     <form method="post" action="{{ route('profile.update') }}" class="flex flex-col gap-5">
         @csrf

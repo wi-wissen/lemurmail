@@ -26,7 +26,7 @@ class InboxController extends Controller
             'minutesLeft' => (int) ceil(max(0, $address->pin_expires_at - $now) / 60),
             'hasSecret' => $address->secret !== null,
             'days' => min(RetentionPolicy::MAX_DAYS, (int) config('lemurmail.retention_days')),
-            'utcOffsetMinutes' => intdiv(now()->utcOffset(), 60),
+            'utcOffsetMinutes' => now()->utcOffset(),
         ]);
     }
 

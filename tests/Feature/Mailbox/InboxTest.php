@@ -112,3 +112,11 @@ it('clears the secret with an empty value and limits its length', function () {
     expect($address->fresh()->secret)->toBeNull();
     $this->put(route('mailbox.secret.update'), ['secret' => str_repeat('a', 501)])->assertSessionHasErrors('secret');
 });
+
+it('hands the app timezone offset in minutes to the inbox script', function () {
+    signedIn($this);
+    // Europe/Berlin is UTC+1 or UTC+2: the value is minutes, not hours.
+    $offset = now()->utcOffset();
+    expect($offset)->toBeIn([60, 120]);
+    expect($this->get(route('mailbox.inbox'))->getContent())->toMatch('/utcOffsetMinutes(\\\\u0022|&quot;|")\s*:\s*'.$offset.'\b/');
+});

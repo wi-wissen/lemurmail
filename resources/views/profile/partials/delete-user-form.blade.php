@@ -25,7 +25,7 @@
             </div>
 
             <div class="flex justify-end gap-3">
-                <x-secondary-button x-on:click="$dispatch('close')">{{ __('common.cancel') }}</x-secondary-button>
+                <x-secondary-button type="button" x-on:click="$dispatch('close')">{{ __('common.cancel') }}</x-secondary-button>
                 <x-danger-button>{{ __('account.profile_delete_button') }}</x-danger-button>
             </div>
         </form>
