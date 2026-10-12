@@ -17,7 +17,64 @@
 }
 
 @layer components {
-    .frc-captcha {
-        @apply w-full max-w-full;
+    /*
+     * Friendly Captcha injects its own stylesheet at runtime, so these selectors are one step more specific
+     * (element + class, or two classes) to win without !important.
+     */
+    div.frc-captcha {
+        @apply w-full min-w-0 max-w-none rounded-lg border-[1.5px] border-line-strong bg-surface pb-[18px] font-sans text-ink;
+    }
+
+    div.frc-captcha .frc-container {
+        @apply min-h-[56px] px-1;
+    }
+
+    div.frc-captcha .frc-content,
+    div.frc-captcha .frc-content * {
+        @apply text-[15px] text-ink;
+    }
+
+    div.frc-captcha .frc-content > span:first-child {
+        @apply font-bold;
+    }
+
+    div.frc-captcha .frc-icon {
+        fill: theme('colors.accent.DEFAULT');
+        stroke: theme('colors.accent.DEFAULT');
+    }
+
+    div.frc-captcha .frc-icon.frc-warning {
+        fill: theme('colors.danger.DEFAULT');
+        stroke: theme('colors.danger.DEFAULT');
+    }
+
+    div.frc-captcha .frc-button {
+        @apply rounded-md border border-accent bg-accent-soft py-1.5 text-[15px] font-bold text-ink;
+    }
+
+    div.frc-captcha .frc-button:hover {
+        background-color: #D3E8E0;
+    }
+
+    div.frc-captcha .frc-button:focus-visible {
+        @apply outline outline-2 outline-offset-2 outline-accent;
+    }
+
+    div.frc-captcha .frc-progress {
+        @apply rounded-full;
+        color: theme('colors.accent.DEFAULT');
+    }
+
+    div.frc-captcha .frc-progress::-webkit-progress-value {
+        background: theme('colors.accent.DEFAULT');
+    }
+
+    div.frc-captcha .frc-progress::-moz-progress-bar {
+        background: theme('colors.accent.DEFAULT');
+    }
+
+    div.frc-captcha .frc-banner,
+    div.frc-captcha .frc-banner * {
+        @apply text-[11px] text-ink-soft;
     }
 }

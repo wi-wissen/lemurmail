@@ -43,4 +43,6 @@ return [
     'secret_form_title' => 'Secret hinterlegen',
     'secret_label' => 'Secret',
     'secret_edit_hint' => 'Das Secret wird verschlüsselt gespeichert und ist nur nach der Anmeldung mit der PIN sichtbar. Das bisherige Secret wird aus Sicherheitsgründen nicht angezeigt. Leer speichern entfernt es.',
+    'copy_address' => 'Adresse kopieren',
+    'copied' => 'Kopiert',
 ];

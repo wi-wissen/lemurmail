@@ -39,8 +39,11 @@ it('creates, lists, renames and deletes groups of the teacher only', function ()
     $this->delete(route('groups.destroy', $other))->assertNotFound();
 
     $addr = Address::factory()->create(['user_id' => $t->id, 'group_id' => $g->id]);
+    Message::factory()->create(['address_id' => $addr->id]);
+    $loose = Address::factory()->create(['user_id' => $t->id, 'group_id' => null]);
     $this->delete(route('groups.destroy', $g))->assertRedirect(route('groups.index'));
-    expect(Group::find($g->id))->toBeNull()->and($addr->fresh()->group_id)->toBeNull();
+    // deleting a group deletes its addresses and their mails; addresses outside the group stay
+    expect(Group::find($g->id))->toBeNull()->and(Address::find($addr->id))->toBeNull()->and(Message::count())->toBe(0)->and(Address::find($loose->id))->not->toBeNull();
 });
 
 it('validates the group name', function () {

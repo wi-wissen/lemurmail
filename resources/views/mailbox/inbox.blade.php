@@ -17,7 +17,10 @@
 
 <x-mailbox-layout>
     <x-slot:meta>
-        <span class="break-all rounded-lg bg-accent-soft px-3 py-1.5 font-mono text-base">{{ $address->email() }}</span>
+        <span class="inline-flex min-w-0 items-center gap-2">
+            <span class="break-all rounded-lg bg-accent-soft px-3 py-1.5 font-mono text-base">{{ $address->email() }}</span>
+            <x-copy-button :text="$address->email()" />
+        </span>
         <span class="rounded-lg bg-warn-soft px-3 py-1.5 text-base font-bold text-warn-ink"
               x-data="pinCountdown(@js($countdown))" x-text="label">{{ $initialLabel }}</span>
     </x-slot:meta>

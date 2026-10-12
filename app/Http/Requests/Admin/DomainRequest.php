@@ -2,23 +2,33 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Models\BlockedDomain;
+use App\Core\Registration\DomainPolicy;
+use App\Models\OrganizationDomain;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DomainRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
+        $pattern = trim((string) $this->input('pattern'));
+
         $this->merge([
-            'domain' => BlockedDomain::normalize((string) $this->input('domain')),
+            'domain' => OrganizationDomain::normalize((string) $this->input('domain')),
+            'pattern' => $pattern === '' ? null : $pattern,
         ]);
     }
 
-    /** @return array<string, array<int, string>> */
+    /** @return array<string, array<int, mixed>> */
     public function rules(): array
     {
         return [
             'domain' => ['required', 'string', 'max:253', 'regex:/^[a-z0-9-]+(\.[a-z0-9-]+)+$/'],
+            'pattern' => ['nullable', 'string', function (string $attribute, mixed $value, Closure $fail): void {
+                if ($value !== null && ! DomainPolicy::isValidPattern($value)) {
+                    $fail(__('admin.errors.pattern_invalid'));
+                }
+            }],
         ];
     }
 

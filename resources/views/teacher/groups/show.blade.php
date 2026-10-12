@@ -61,6 +61,7 @@
                                             <details>
                                                 <summary class="min-h-[40px] cursor-pointer py-2 text-[15px] font-bold text-accent">{{ __('teacher.addresses.extra_senders', ['count' => $address->senderRules->count()]) }}</summary>
                                                 <div class="mt-2 flex flex-col gap-3">
+                                                    <p class="text-[15px] font-bold">{{ __('teacher.senders.extra_for_address') }}</p>
                                                     <p class="text-[15px] leading-snug text-ink-soft">{{ __('teacher.addresses.extra_senders_hint') }}</p>
                                                     @forelse ($address->senderRules as $rule)
                                                         <div class="flex flex-wrap items-center gap-3 font-mono text-[14px]">
@@ -94,7 +95,7 @@
             </section>
 
             <aside class="flex flex-col gap-6">
-                @include('teacher.senders._list', ['rules' => $defaultRules])
+                @include('teacher.senders._summary', ['rules' => $defaultRules])
 
                 <section class="flex flex-col gap-4 rounded-lg border border-line bg-surface p-6">
                     <h2 class="text-xl font-bold">{{ __('teacher.addresses.create_title') }}</h2>
@@ -139,10 +140,12 @@
                         <x-input-error :messages="$errors->get('name')" />
                     </form>
 
-                    <form method="POST" action="{{ route('groups.destroy', $group) }}" class="flex flex-col gap-2 border-t border-line pt-4">
+                    <form method="POST" action="{{ route('groups.destroy', $group) }}" class="flex flex-col gap-2 border-t border-line pt-4"
+                        x-data data-confirm="{{ __('teacher.groups.delete_confirm', ['count' => $group->addresses->count()]) }}"
+                        @submit="if (! confirm($el.dataset.confirm)) $event.preventDefault()">
                         @csrf
                         @method('DELETE')
-                        <p class="text-[15px] leading-snug text-ink-soft">{{ __('teacher.groups.delete_hint') }}</p>
+                        <p class="text-[15px] leading-snug text-ink-soft">{{ __('teacher.groups.delete_hint', ['count' => $group->addresses->count()]) }}</p>
                         <button type="submit" class="min-h-[44px] self-start text-base font-bold text-ink-soft underline hover:text-danger focus-visible:text-danger">{{ __('teacher.groups.delete') }}</button>
                     </form>
                 </section>

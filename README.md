@@ -44,6 +44,25 @@ composer install
 ./vendor/bin/sail artisan lemurmail:make-admin you@example.org   # asks for the password
 ```
 
+**First start without PHP on the host.** `./vendor/bin/sail` only exists after `composer install`. If the machine has
+only Docker, install the dependencies once in a throw-away container (the Sail image also needs the host user/group ids,
+so export them for the first `up`):
+
+```bash
+docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/html \
+    laravelsail/php85-composer:latest composer install --ignore-platform-reqs
+export WWWUSER=$(id -u) WWWGROUP=$(id -g)
+./vendor/bin/sail up -d --build
+```
+
+On Windows use WSL2 and run everything inside the Linux file system (for example `~/lemurmail`), not under `/mnt/c`.
+
+**Which compose file is used?** Docker Compose prefers `compose.yaml` over `docker-compose.yml` when both exist in a
+folder. In the repository checkout that is the Sail development setup, so `docker compose up` and `sail up` start the
+same thing. The production file `docker-compose.yml` is meant to be copied to the server on its own (see
+[Production deployment](#production-deployment)); there it is the only file and is picked up as usual. To run it from inside the
+checkout, name it explicitly: `docker compose -f docker-compose.yml up -d`.
+
 - The app runs at <http://localhost> (port 80 unless changed in `compose.yaml`).
 - Verification and other outgoing mails are caught by **Mailpit** at <http://localhost:8025>.
 - Simulate an incoming mail through the signed webhook, without Lettermint:

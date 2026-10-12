@@ -10,6 +10,7 @@ use App\Support\Clock;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
 {
@@ -50,7 +51,13 @@ class GroupController extends Controller
 
     public function destroy(Request $request, Group $group): RedirectResponse
     {
-        $this->owned($request, $group)->delete();
+        $this->owned($request, $group);
+
+        // Deleting a group deletes its addresses; their mails and per-address sender rules follow by foreign key.
+        DB::transaction(function () use ($group) {
+            $group->addresses()->delete();
+            $group->delete();
+        });
 
         return redirect()->route('groups.index')->with('status', __('teacher.flash.group_deleted'));
     }

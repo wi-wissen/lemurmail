@@ -4,7 +4,10 @@
             <a href="{{ $group ? route('groups.show', $group) : route('groups.index') }}" class="text-base font-bold text-accent underline">
                 {{ $group ? __('teacher.inbox.back_group') : __('teacher.inbox.back_groups') }}
             </a>
-            <h1 class="break-all font-mono text-2xl leading-tight">{{ $address->email() }}</h1>
+            <div class="flex min-w-0 items-start gap-3">
+                <h1 class="min-w-0 break-all font-mono text-2xl leading-tight">{{ $address->email() }}</h1>
+                <x-copy-button :text="$address->email()" class="mt-0.5" />
+            </div>
         </header>
 
         <div class="flex min-h-[520px] flex-col overflow-hidden rounded-lg border border-line bg-surface">

@@ -4,6 +4,7 @@ return [
     'nav' => [
         'users' => 'Teacher accounts',
         'domains' => 'School domains',
+        'freemail' => 'Blocked domains',
         'settings' => 'Settings',
     ],
 
@@ -21,6 +22,7 @@ return [
         'super_admin_block' => 'Super admins cannot be blocked.',
         'domain_required' => 'Please enter a domain.',
         'domain_invalid' => 'This is not a valid domain, e.g. school.example.org.',
+        'pattern_invalid' => 'This is not a valid regular expression (at most 200 characters).',
     ],
 
     'users' => [
@@ -55,17 +57,24 @@ return [
 
     'domains' => [
         'organization_title' => 'School domains',
-        'organization_hint' => 'E-mail domains of teachers, for example schule.example.org. Anyone registering with such an address is approved at once. This has nothing to do with the allowed mail senders, which teachers manage themselves.',
-        'freemail_title' => 'Blocked domains',
-        'freemail_hint' => 'Freemail and disposable domains that cannot be used to register.',
+        'explanation' => 'Anyone registering with an address that matches an entry is approved at once, everyone else waits for your approval. Without a pattern the entry applies to every address of the domain. With a pattern (regular expression) only to addresses whose name before the @ fully matches the pattern, case-insensitive. Example: [a-z]+\.[a-z]+ matches max.mustermann, but not max.mustermann7.',
         'domain' => 'Domain',
         'domain_placeholder' => 'school.example.org',
+        'pattern' => 'Pattern for the name before the @ (optional)',
+        'pattern_placeholder' => '[a-z]+\.[a-z]+',
+        'pattern_all' => 'all addresses',
         'add' => 'Add',
         'remove' => 'Remove',
+        'remove_entry' => 'Remove entry :entry',
         'none_organization' => 'No school domains yet.',
-        'none_freemail' => 'No domains blocked.',
-        'saved' => 'Domain saved.',
-        'removed' => 'Domain removed.',
+        'saved' => 'Entry saved.',
+        'removed' => 'Entry removed.',
+    ],
+
+    'freemail' => [
+        'title' => 'Blocked domains',
+        'hint' => 'Freemail and disposable domains that cannot be used to register.',
+        'none' => 'No domains blocked.',
     ],
 
     'mail' => [

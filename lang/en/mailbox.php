@@ -43,4 +43,6 @@ return [
     'secret_form_title' => 'Save secret',
     'secret_label' => 'Secret',
     'secret_edit_hint' => 'The secret is stored encrypted and is only visible after logging in with the PIN. For safety, the current secret is not shown. Saving an empty field removes it.',
+    'copy_address' => 'Copy address',
+    'copied' => 'Copied',
 ];

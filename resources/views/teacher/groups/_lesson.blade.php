@@ -41,7 +41,7 @@
                 <span class="text-base text-[#2F4A41]" x-text="text">{{ $initialRemaining }}</span>
             </div>
             <div class="flex flex-wrap gap-2.5">
-                <a href="{{ route('groups.beamer', $group) }}" class="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-accent px-5 text-base font-bold text-white hover:bg-accent-hover">{{ __('lesson.open_beamer') }}</a>
+                <a href="{{ route('groups.beamer', $group) }}" target="_blank" rel="noopener" class="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-accent px-5 text-base font-bold text-white hover:bg-accent-hover hover:text-white">{{ __('lesson.open_beamer') }}</a>
                 <form method="POST" action="{{ route('groups.lesson.extend', $group) }}">
                     @csrf
                     <x-secondary-button type="submit">{{ __('lesson.extend') }}</x-secondary-button>

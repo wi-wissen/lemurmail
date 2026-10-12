@@ -6,12 +6,18 @@ namespace App\Core\Registration;
  * Classification order: Invalid, OwnMailDomain, Freemail, Approved, Unknown.
  * Domain comparison is case-insensitive. OwnMailDomain and Freemail also match subdomains
  * ("x.gmail.com"); Approved matches the exact domain only.
+ *
+ * An approved entry is either a domain string (the whole domain) or
+ * ['domain' => string, 'pattern' => ?string], where the pattern is a regular expression that
+ * must match the whole local part (the name before the @), case-insensitively.
  */
 final class DomainPolicy
 {
+    private const MAX_PATTERN_LENGTH = 200;
+
     /**
      * @param  list<string>  $freemailDomains
-     * @param  list<string>  $approvedDomains
+     * @param  list<string|array{domain: string, pattern: ?string}>  $approvedDomains
      */
     public function __construct(
         private readonly string $ownMailDomain,
@@ -33,7 +39,7 @@ final class DomainPolicy
                 return DomainClass::Freemail;
             }
         }
-        if (in_array($domain, array_map(self::normalizeDomain(...), $this->approvedDomains), true)) {
+        if ($this->isApproved($email, $domain)) {
             return DomainClass::Approved;
         }
 
@@ -49,6 +55,71 @@ final class DomainPolicy
         }
 
         return $parts[1];
+    }
+
+    /** A pattern for the name before the @: non-empty, at most 200 characters, and it must compile. */
+    public static function isValidPattern(string $pattern): bool
+    {
+        return $pattern !== ''
+            && strlen($pattern) <= self::MAX_PATTERN_LENGTH
+            && self::matchesWhole($pattern, '') !== null;
+    }
+
+    private function isApproved(string $email, string $domain): bool
+    {
+        $localPart = strstr(strtolower(trim($email)), '@', true);
+
+        foreach ($this->approvedDomains as $entry) {
+            [$entryDomain, $pattern] = is_array($entry)
+                ? [$entry['domain'], $entry['pattern'] ?? null]
+                : [$entry, null];
+
+            if (self::normalizeDomain($entryDomain) !== $domain) {
+                continue;
+            }
+            if ($pattern === null || $pattern === '' || self::matchesWhole($pattern, $localPart) === true) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** True or false if the pattern runs; null if it does not compile or hits the backtrack limit. */
+    private static function matchesWhole(string $pattern, string $subject): ?bool
+    {
+        set_error_handler(static fn (): bool => true);
+        try {
+            $found = preg_match(self::wrapPattern($pattern), $subject, $matches);
+        } finally {
+            restore_error_handler();
+        }
+
+        if ($found === false) {
+            return null;
+        }
+
+        return $found === 1 && $matches[0] === $subject;
+    }
+
+    /**
+     * Anchors the pattern and escapes every unescaped "~", the delimiter used here.
+     * Backslash escapes are copied as pairs so an escaped character is never reinterpreted.
+     */
+    private static function wrapPattern(string $pattern): string
+    {
+        $body = '';
+        $length = strlen($pattern);
+        for ($i = 0; $i < $length; $i++) {
+            $char = $pattern[$i];
+            if ($char === '\\' && $i + 1 < $length) {
+                $body .= $char.$pattern[++$i];
+            } else {
+                $body .= $char === '~' ? '\~' : $char;
+            }
+        }
+
+        return '~^(?:'.$body.')$~iD';
     }
 
     private static function inDomain(string $domain, string $base): bool

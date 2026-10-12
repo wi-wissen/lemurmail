@@ -65,7 +65,7 @@
                                         <div class="flex items-center gap-2">
                                             <span class="inline-block rounded-full border px-3 py-0.5 font-bold {{ $statusClasses[$user->status] }}">{{ __('admin.status.'.$user->status) }}</span>
                                             @if ($user->isSuperAdmin())
-                                                <span class="text-accent">{{ __('admin.super_admin') }}</span>
+                                                <span data-badge="super-admin" class="inline-block rounded-full border border-ink-soft bg-paper px-3 py-0.5 font-bold text-ink">{{ __('admin.super_admin') }}</span>
                                             @endif
                                         </div>
                                     </td>

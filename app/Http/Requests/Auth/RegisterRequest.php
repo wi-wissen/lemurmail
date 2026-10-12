@@ -55,7 +55,9 @@ class RegisterRequest extends FormRequest
         return $this->domainClass ??= (new DomainPolicy(
             ownMailDomain: config('lemurmail.mail_domain'),
             freemailDomains: BlockedDomain::pluck('domain')->all(),
-            approvedDomains: OrganizationDomain::pluck('domain')->all(),
+            approvedDomains: OrganizationDomain::get()
+                ->map(fn (OrganizationDomain $domain) => ['domain' => $domain->domain, 'pattern' => $domain->local_part_pattern])
+                ->all(),
         ))->classify($this->string('email')->value());
     }
 }

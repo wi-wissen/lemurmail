@@ -35,3 +35,24 @@ it('links the complete icon set and every linked file exists', function () {
     }
     expect(collect($manifest['icons'])->pluck('purpose')->all())->toContain('maskable');
 });
+
+it('falls back to the product name when no APP_NAME is set', function () {
+    $config = require config_path('app.php');
+    expect($config['name'])->toBe(env('APP_NAME', 'Lemur Mail'));
+    expect(file_get_contents(config_path('app.php')).file_get_contents(config_path('mail.php')).file_get_contents(config_path('logging.php')))
+        ->not->toContain("'APP_NAME', 'Laravel'");
+});
+
+it('puts the privacy link before the imprint, so the imprint is the rightmost link', function () {
+    config(['lemurmail.imprint_url' => 'https://example.org/impressum', 'lemurmail.privacy_url' => 'https://example.org/datenschutz']);
+    $html = $this->get('/')->getContent();
+
+    expect(strpos($html, 'https://example.org/datenschutz'))->toBeLessThan(strpos($html, 'https://example.org/impressum'));
+});
+
+it('puts the privacy link before the imprint on the static About pages too', function () {
+    foreach (['site/index.html' => ['datenschutz.html', 'impressum.html'], 'site/en/index.html' => ['privacy.html', 'imprint.html']] as $file => [$privacy, $imprint]) {
+        $html = file_get_contents(base_path($file));
+        expect(strrpos($html, 'href="'.$privacy.'"'))->toBeLessThan(strrpos($html, 'href="'.$imprint.'"'));
+    }
+});

@@ -4,6 +4,7 @@ return [
     'nav' => [
         'users' => 'Lehrer:innen-Konten',
         'domains' => 'Schul-Domains',
+        'freemail' => 'Gesperrte Domains',
         'settings' => 'Einstellungen',
     ],
 
@@ -21,6 +22,7 @@ return [
         'super_admin_block' => 'Super-Admins können nicht gesperrt werden.',
         'domain_required' => 'Bitte eine Domain eingeben.',
         'domain_invalid' => 'Das ist keine gültige Domain, z. B. schule.example.org.',
+        'pattern_invalid' => 'Das ist kein gültiger regulärer Ausdruck (höchstens 200 Zeichen).',
     ],
 
     'users' => [
@@ -55,17 +57,24 @@ return [
 
     'domains' => [
         'organization_title' => 'Schul-Domains',
-        'organization_hint' => 'E-Mail-Domains von Lehrer:innen, zum Beispiel schule.example.org. Wer sich mit so einer Adresse registriert, wird sofort freigeschaltet. Mit den erlaubten Absendern von Mails hat das nichts zu tun, die pflegen die Lehrer:innen selbst.',
-        'freemail_title' => 'Gesperrte Domains',
-        'freemail_hint' => 'Freemail- und Wegwerf-Domains, für die keine Registrierung möglich ist.',
+        'explanation' => 'Wer sich mit einer Adresse registriert, die zu einem Eintrag passt, wird sofort freigeschaltet, alle anderen warten auf deine Freigabe. Ohne Muster gilt der Eintrag für jede Adresse der Domain. Mit Muster (regulärer Ausdruck) nur für Adressen, deren Name vor dem @ vollständig zum Muster passt, Groß-/Kleinschreibung egal. Beispiel: [a-z]+\.[a-z]+ passt auf max.mustermann, aber nicht auf max.mustermann7.',
         'domain' => 'Domain',
         'domain_placeholder' => 'schule.example.org',
+        'pattern' => 'Muster für den Namen vor dem @ (optional)',
+        'pattern_placeholder' => '[a-z]+\.[a-z]+',
+        'pattern_all' => 'alle Adressen',
         'add' => 'Hinzufügen',
         'remove' => 'Entfernen',
+        'remove_entry' => 'Eintrag :entry entfernen',
         'none_organization' => 'Keine Schul-Domains hinterlegt.',
-        'none_freemail' => 'Keine Domains gesperrt.',
-        'saved' => 'Domain gespeichert.',
-        'removed' => 'Domain entfernt.',
+        'saved' => 'Eintrag gespeichert.',
+        'removed' => 'Eintrag entfernt.',
+    ],
+
+    'freemail' => [
+        'title' => 'Gesperrte Domains',
+        'hint' => 'Freemail- und Wegwerf-Domains, für die keine Registrierung möglich ist.',
+        'none' => 'Keine Domains gesperrt.',
     ],
 
     'mail' => [

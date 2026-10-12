@@ -28,6 +28,8 @@
                     {{ __('auth.remember_me') }}
                 </label>
 
+                <x-captcha />
+
                 <x-primary-button class="w-full">{{ __('auth.login_submit') }}</x-primary-button>
             </form>
 

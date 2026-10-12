@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DomainController;
+use App\Http\Controllers\Admin\FreemailController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -16,8 +17,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('/domains', [DomainController::class, 'index'])->name('domains.index');
     Route::post('/domains/organization', [DomainController::class, 'storeOrganization'])->name('domains.organization.store');
     Route::delete('/domains/organization/{organizationDomain}', [DomainController::class, 'destroyOrganization'])->name('domains.organization.destroy');
-    Route::post('/domains/freemail', [DomainController::class, 'storeFreemail'])->name('domains.freemail.store');
-    Route::delete('/domains/freemail/{blockedDomain}', [DomainController::class, 'destroyFreemail'])->name('domains.freemail.destroy');
+
+    Route::get('/freemail', [FreemailController::class, 'index'])->name('freemail.index');
+    Route::post('/freemail', [FreemailController::class, 'store'])->name('freemail.store');
+    Route::delete('/freemail/{blockedDomain}', [FreemailController::class, 'destroy'])->name('freemail.destroy');
 
     Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
     Route::patch('/settings', [SettingController::class, 'update'])->name('settings.update');

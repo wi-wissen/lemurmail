@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\BlockedDomain;
 use App\Models\OrganizationDomain;
 use App\Models\Setting;
 use App\Models\User;
@@ -68,20 +67,16 @@ it('sets and clears the address cap of a teacher and the global cap', function (
     expect(Setting::getInt('address_limit', 0))->toBe(120)->and($t->fresh()->addressLimit())->toBe(120);
 });
 
-it('maintains organisation and freemail domains', function () {
+it('maintains organisation domains', function () {
     $this->actingAs(admin())->post(route('admin.domains.organization.store'), ['domain' => ' @Schule.Example.org '])->assertRedirect();
     $this->post(route('admin.domains.organization.store'), ['domain' => 'schule.example.org'])->assertRedirect(); // duplicate ignored
     expect(OrganizationDomain::pluck('domain')->all())->toBe(['schule.example.org']);
     $this->post(route('admin.domains.organization.store'), ['domain' => 'not a domain'])->assertSessionHasErrors('domain');
 
-    $this->post(route('admin.domains.freemail.store'), ['domain' => 'Wegwerf.Example'])->assertRedirect();
-    expect(BlockedDomain::where('domain', 'wegwerf.example')->exists())->toBeTrue();
-
-    $this->get(route('admin.domains.index'))->assertOk()->assertSee('schule.example.org')->assertSee('wegwerf.example');
+    $this->get(route('admin.domains.index'))->assertOk()->assertSee('schule.example.org');
 
     $this->delete(route('admin.domains.organization.destroy', OrganizationDomain::first()))->assertRedirect();
-    $this->delete(route('admin.domains.freemail.destroy', BlockedDomain::where('domain', 'wegwerf.example')->first()))->assertRedirect();
-    expect(OrganizationDomain::count())->toBe(0)->and(BlockedDomain::where('domain', 'wegwerf.example')->exists())->toBeFalse();
+    expect(OrganizationDomain::count())->toBe(0);
 });
 
 it('uses the maintained lists for new registrations', function () {

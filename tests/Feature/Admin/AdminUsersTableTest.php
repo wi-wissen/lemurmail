@@ -122,3 +122,8 @@ it('shows the sign-up date localized with the language of the page', function ()
     $this->get(route('admin.users.index'), ['Accept-Language' => 'de'])->assertSee('07.03.2026')->assertDontSee('2026-03-07');
     $this->get(route('admin.users.index'), ['Accept-Language' => 'en'])->assertSee('03/07/2026');
 });
+
+it('shows super admins with a badge like the status badges', function () {
+    $html = $this->get(route('admin.users.index'))->getContent();
+    expect($html)->toContain('data-badge="super-admin"')->toContain('rounded-full');
+});
