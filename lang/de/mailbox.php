@@ -36,9 +36,11 @@ return [
 
     'secret_title' => 'Secret dieser Adresse',
     'secret_hint' => 'Zum Beispiel das Passwort, das du beim Dienst vergeben hast.',
-    'secret_none' => 'Noch kein Secret hinterlegt.',
     'secret_show' => 'Anzeigen',
     'secret_hide' => 'Verbergen',
+    'secret_copy' => 'Kopieren',
+    'secret_copied' => 'Kopiert',
+    'secret_add' => '+ Secret hinterlegen',
     'secret_change' => 'Ändern',
     'secret_form_title' => 'Secret hinterlegen',
     'secret_label' => 'Secret',

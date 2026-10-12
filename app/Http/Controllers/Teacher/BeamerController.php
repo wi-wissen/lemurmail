@@ -39,6 +39,7 @@ class BeamerController extends Controller
             'group' => $group,
             'pins' => $pins,
             'domain' => config('lemurmail.mail_domain'),
+            'host' => $request->getHost(),
             'validUntil' => TimeLabel::until($window->endsAt, $now),
             'endsAt' => $window->endsAt,
             'now' => $now,

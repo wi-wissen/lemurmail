@@ -208,3 +208,13 @@ it('shows the lesson controls on the group page', function () {
     $this->post(route('groups.lesson.start', $g), ['mode' => 'minutes', 'minutes' => 45]);
     $this->get(route('groups.show', $g))->assertSee(__('lesson.open_beamer'))->assertSee(__('lesson.end'))->assertSee(date('H:i', $g->fresh()->lesson_ends_at));
 });
+
+it('shows a name placeholder with the mail domain so pupils do not copy a sample address', function () {
+    [$t, $g] = lessonSetup(2);
+    $this->actingAs($t)->post(route('groups.lesson.start', $g), ['mode' => 'minutes', 'minutes' => 45]);
+
+    $html = $this->get(route('groups.beamer', $g))->assertOk()->getContent();
+
+    expect($html)->toContain(e('<name>'))->toContain('@<span')->toContain('tmp-mail.example.org')
+        ->and($html)->toContain('x-show="lastMinute"');
+});

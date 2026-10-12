@@ -78,3 +78,7 @@
         @apply text-[11px] text-ink-soft;
     }
 }
+
+[x-cloak] {
+    display: none !important;
+}

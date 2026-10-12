@@ -1,33 +1,23 @@
-@php
-    $left = $endsAt - $now;
-    $daysLeft = (int) ceil($left / 86400);
-    $initialRemaining = $left >= 86400
-        ? __('lesson.beamer_days_'.($daysLeft === 1 ? 'one' : 'other'), ['count' => $daysLeft])
-        : __('lesson.beamer_remaining', ['time' => $left >= 3600 ? gmdate('G:i:s', $left) : intdiv($left, 60).gmdate(':s', $left)]);
-@endphp
-
 <x-beamer-layout :title="$group->name">
     <main
         x-data="beamer"
         data-ends-at="{{ $endsAt }}"
         data-server-now="{{ $now }}"
         data-clock-template="{{ __('lesson.beamer_remaining', ['time' => ':time']) }}"
-        data-days-one="{{ __('lesson.beamer_days_one', ['count' => ':count']) }}"
-        data-days-other="{{ __('lesson.beamer_days_other', ['count' => ':count']) }}"
         x-bind:style="'--scale: ' + scale / 100"
         class="flex min-h-screen flex-col gap-5 px-5 py-6 sm:px-14 sm:pb-6 sm:pt-8"
     >
-        <header class="flex flex-wrap items-end justify-between gap-8">
-            <div class="flex flex-col gap-1.5">
-                <span class="text-beamer-muted" style="font-size: calc(1.5rem * var(--scale, 1))">{{ __('lesson.beamer_intro', ['domain' => $domain]) }}</span>
-                <h1 class="font-bold leading-tight" style="font-size: calc(3.75rem * var(--scale, 1))">{{ $group->name }}</h1>
+        <header class="flex flex-wrap items-start justify-between gap-x-10 gap-y-4">
+            <div class="flex min-w-0 flex-col gap-2">
+                <h1 class="font-mono font-bold leading-tight" style="font-size: calc(3.5rem * var(--scale, 1))">
+                    <span class="text-beamer-muted">{{ __('lesson.beamer_name_placeholder') }}</span>@<span class="text-beamer-accent">{{ $domain }}</span>
+                </h1>
+                <p class="text-beamer-muted" style="font-size: calc(1.5rem * var(--scale, 1))">{{ __('lesson.beamer_intro', ['host' => $host]) }}</p>
             </div>
-            <div class="flex flex-wrap items-baseline gap-6">
-                <div class="flex flex-col items-end">
-                    <span class="text-beamer-muted" style="font-size: calc(1.25rem * var(--scale, 1))">{{ __('lesson.valid_until') }}</span>
-                    <span class="font-mono font-bold leading-none text-beamer-accent" style="font-size: calc(4rem * var(--scale, 1))">{{ $validUntil }}</span>
-                </div>
-                <span class="font-mono text-beamer-warn" style="font-size: calc(1.875rem * var(--scale, 1))" x-text="remaining">{{ $initialRemaining }}</span>
+            <div class="flex flex-col items-end gap-2">
+                <span class="text-beamer-muted" style="font-size: calc(1.25rem * var(--scale, 1))">{{ $group->name }}</span>
+                <span x-show="! lastMinute" class="text-beamer-muted" style="font-size: calc(1.25rem * var(--scale, 1))">{{ __('lesson.valid_until') }} <span class="font-mono font-bold text-beamer-text">{{ $validUntil }}</span></span>
+                <span x-show="lastMinute" x-cloak class="rounded-lg bg-beamer-warn px-4 py-1 font-mono font-bold text-beamer-bg" style="font-size: calc(1.875rem * var(--scale, 1))" role="timer" x-text="remaining"></span>
             </div>
         </header>
 
@@ -53,7 +43,8 @@
                 </button>
                 <form method="POST" action="{{ route('groups.lesson.extend', $group) }}">
                     @csrf
-                    <button type="submit" class="inline-flex min-h-[44px] items-center rounded-lg border-[1.5px] border-beamer-muted px-4 text-base font-bold text-beamer-text hover:bg-beamer-row">{{ __('lesson.extend') }}</button>
+                    <button type="submit" class="inline-flex min-h-[44px] items-center rounded-lg border-[1.5px] px-4 text-base font-bold hover:bg-beamer-row"
+                        :class="lastMinute ? 'border-beamer-warn text-beamer-warn' : 'border-beamer-muted text-beamer-text'">{{ __('lesson.extend') }}</button>
                 </form>
                 <button type="button" class="inline-flex min-h-[44px] items-center rounded-lg bg-beamer-accent px-4 text-base font-bold text-beamer-bg" @click="toggleFullscreen()">{{ __('lesson.fullscreen') }}</button>
             </div>

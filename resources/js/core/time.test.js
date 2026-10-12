@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clockOffset, formatClock, formatRemaining, remainingDays, remainingMinutes, secondsLeft, serverNow } from './time.js';
+import { clockOffset, formatClock, formatRemaining, isLastMinute, remainingDays, remainingMinutes, secondsLeft, serverNow } from './time.js';
 
 describe('formatRemaining', () => {
     it('formats minutes and seconds', () => {
@@ -69,5 +69,14 @@ describe('remainingDays', () => {
         expect(remainingDays(-5)).toBe(0);
         expect(remainingDays(NaN)).toBe(0);
         expect(remainingDays(Infinity)).toBe(0);
+    });
+});
+
+describe('isLastMinute', () => {
+    it('is true only for the final 60 seconds', () => {
+        expect(isLastMinute(61)).toBe(false);
+        expect(isLastMinute(60)).toBe(true);
+        expect(isLastMinute(1)).toBe(true);
+        expect(isLastMinute(0)).toBe(false);
     });
 });

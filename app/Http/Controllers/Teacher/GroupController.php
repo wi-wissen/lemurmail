@@ -36,6 +36,7 @@ class GroupController extends Controller
 
         return view('teacher.groups.show', [
             'group' => $group,
+            'initialTab' => $request->session()->get('errors')?->has('name') ? 'settings' : 'addresses',
             'now' => Clock::now(),
             'addresses' => $group->addresses()->withCount('messages')->with('senderRules')->orderBy('local_part')->get(),
             'defaultRules' => $request->user()->senderRules()->whereNull('address_id')->orderBy('pattern')->get(),

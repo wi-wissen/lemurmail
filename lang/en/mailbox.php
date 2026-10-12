@@ -36,9 +36,11 @@ return [
 
     'secret_title' => 'Secret of this address',
     'secret_hint' => 'For example the password you chose with the service.',
-    'secret_none' => 'No secret saved yet.',
     'secret_show' => 'Show',
     'secret_hide' => 'Hide',
+    'secret_copy' => 'Copy',
+    'secret_copied' => 'Copied',
+    'secret_add' => '+ Add a secret',
     'secret_change' => 'Change',
     'secret_form_title' => 'Save secret',
     'secret_label' => 'Secret',

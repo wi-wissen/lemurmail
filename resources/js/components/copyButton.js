@@ -1,6 +1,6 @@
 const COPIED_MS = 2000;
 
-async function writeClipboard(text) {
+export async function writeClipboard(text) {
     try {
         if (navigator.clipboard?.writeText) {
             await navigator.clipboard.writeText(text);

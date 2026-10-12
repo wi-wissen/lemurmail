@@ -2,6 +2,10 @@
 
 return [
     'groups' => [
+        'tabs_label' => 'Bereiche der Gruppe',
+        'tab_addresses' => 'Adressen',
+        'tab_senders' => 'Erlaubte Absender',
+        'tab_settings' => 'Einstellungen',
         'title' => 'Gruppen',
         'create' => 'Gruppe anlegen',
         'name' => 'Name',

@@ -34,3 +34,15 @@ it('has the strings for the button in both languages', function () {
         expect($strings)->toHaveKeys(['copy_address', 'copied']);
     }
 });
+
+it('puts the secret bar above the mails, quiet when empty and with copy when set', function () {
+    $address = Address::factory()->withPin('K7M4QX9R')->create(['local_part' => 'klasse7a-03']);
+    $this->post(route('mailbox.login'), ['address' => 'klasse7a-03', 'pin' => 'K7M4QX9R']);
+
+    $html = $this->get(route('mailbox.inbox'))->assertOk()->getContent();
+    expect($html)->toContain(e(__('mailbox.secret_add')))->not->toContain('copySecret()')->not->toContain(__('mailbox.secret_none'));
+
+    $address->update(['secret' => 'hunter2-hunter2']);
+    $html = $this->get(route('mailbox.inbox'))->getContent();
+    expect($html)->toContain('copySecret()')->toContain(e(__('mailbox.secret_change')))->not->toContain('hunter2');
+});

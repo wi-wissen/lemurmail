@@ -2,6 +2,10 @@
 
 return [
     'groups' => [
+        'tabs_label' => 'Group sections',
+        'tab_addresses' => 'Addresses',
+        'tab_senders' => 'Allowed senders',
+        'tab_settings' => 'Settings',
         'title' => 'Groups',
         'create' => 'Create group',
         'name' => 'Name',

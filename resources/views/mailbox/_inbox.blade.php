@@ -12,15 +12,32 @@
             'noSubject' => __('mailbox.no_subject'),
             'mailLoading' => __('mailbox.mail_loading'),
             'deleteConfirm' => __('mailbox.delete_confirm'),
-            'secretNone' => __('mailbox.secret_none'),
-            'secretMask' => '••••••••••',
+                        'secretMask' => '••••••••••',
             'secretShow' => __('mailbox.secret_show'),
+            'secretCopy' => __('mailbox.secret_copy'),
+            'secretCopied' => __('mailbox.secret_copied'),
             'secretHide' => __('mailbox.secret_hide'),
         ],
     ]);
 @endphp
 
-<div x-data="inbox(@js($inbox))" class="flex flex-1 flex-col lg:flex-row">
+<div x-data="inbox(@js($inbox))" class="flex flex-1 flex-col">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-surface px-6 py-3">
+        <span class="text-base font-bold">{{ __('mailbox.secret_title') }}</span>
+        @if ($hasSecret)
+            <span class="break-all font-mono text-lg tracking-[2px]" x-text="secretText">••••••••••</span>
+            <button type="button" @click="toggleSecret()" class="min-h-[40px] px-2 text-base font-bold text-accent underline"
+                    x-text="secretVisible ? strings.secretHide : strings.secretShow">{{ __('mailbox.secret_show') }}</button>
+            <button type="button" @click="copySecret()" class="min-h-[40px] px-2 text-base font-bold text-accent underline"
+                    x-text="secretCopied ? strings.secretCopied : strings.secretCopy">{{ __('mailbox.secret_copy') }}</button>
+            <a href="{{ $secretEditUrl }}" class="inline-flex min-h-[40px] items-center px-2 text-base font-bold text-accent underline">{{ __('mailbox.secret_change') }}</a>
+        @else
+            <a href="{{ $secretEditUrl }}" class="inline-flex min-h-[40px] items-center text-base font-bold text-accent underline">{{ __('mailbox.secret_add') }}</a>
+        @endif
+        <span class="text-[15px] text-ink-soft">{{ __('mailbox.secret_hint') }}</span>
+    </div>
+
+    <div class="flex flex-1 flex-col lg:flex-row">
     <section class="flex flex-col border-b border-line bg-surface lg:w-[360px] lg:shrink-0 lg:border-b-0 lg:border-r"
              aria-label="{{ __('mailbox.inbox_title') }}">
         <p class="border-b border-line px-6 py-4 text-[15px] text-ink-soft" x-text="countText">{{ __('mailbox.messages_loading') }}</p>
@@ -89,20 +106,6 @@
                         title="{{ __('mailbox.mail_body') }}"></iframe>
             </template>
         </div>
-
-        <div class="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-line bg-surface p-5">
-            <div class="min-w-0 space-y-1">
-                <p class="text-base font-bold">{{ __('mailbox.secret_title') }}</p>
-                <p class="break-all font-mono text-lg tracking-[2px]" x-text="secretText">{{ $hasSecret ? '••••••••••' : __('mailbox.secret_none') }}</p>
-                <p class="text-[15px] text-ink-soft">{{ __('mailbox.secret_hint') }}</p>
-            </div>
-            <div class="flex flex-wrap gap-3">
-                <button type="button" x-show="hasSecret" @click="toggleSecret()"
-                        class="min-h-[44px] rounded-lg border-[1.5px] border-accent px-4 text-base font-bold text-accent hover:bg-accent-soft"
-                        x-text="secretVisible ? strings.secretHide : strings.secretShow">{{ __('mailbox.secret_show') }}</button>
-                <a href="{{ $secretEditUrl }}"
-                   class="inline-flex min-h-[44px] items-center rounded-lg border-[1.5px] border-accent px-4 text-base font-bold text-accent hover:bg-accent-soft">{{ __('mailbox.secret_change') }}</a>
-            </div>
-        </div>
     </section>
+    </div>
 </div>

@@ -67,3 +67,20 @@ it('opens the beamer in a new tab and keeps the label readable on hover', functi
     preg_match('~<a [^>]*href="'.preg_quote(route('groups.beamer', $g), '~').'"[^>]*>~', $html, $m);
     expect($m[0])->toContain('target="_blank"')->toContain('rel="noopener"')->toContain('hover:text-white');
 });
+
+it('splits the group page into addresses, allowed senders and settings tabs', function () {
+    [$t, $g] = clarityGroup();
+    $html = $this->actingAs($t)->get(route('groups.show', $g))->assertOk()->getContent();
+
+    foreach (['addresses', 'senders', 'settings'] as $tab) {
+        expect($html)->toContain('id="panel-'.$tab.'"')->toContain('id="tab-'.$tab.'"');
+    }
+    expect($html)->toContain("groupTabs('addresses')");
+});
+
+it('opens the settings tab when renaming the group failed validation', function () {
+    [$t, $g] = clarityGroup();
+    $this->actingAs($t)->from(route('groups.show', $g))->put(route('groups.update', $g), ['name' => ''])->assertRedirect(route('groups.show', $g));
+
+    $this->get(route('groups.show', $g))->assertSee("groupTabs('settings')", false);
+});

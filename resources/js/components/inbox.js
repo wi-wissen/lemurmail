@@ -1,3 +1,4 @@
+import { writeClipboard } from './copyButton.js';
 import { mergeMessages, nextSelection, pollDelay } from '../core/inbox.js';
 import { clockOffset, formatClock, remainingDays, remainingMinutes, secondsLeft } from '../core/time.js';
 
@@ -26,6 +27,8 @@ export default (Alpine) => {
         detail: null,
         view: 'text',
         secretVisible: false,
+        secretCopied: false,
+        secretCopiedTimer: null,
         secret: null,
         ended: false,
 
@@ -45,9 +48,6 @@ export default (Alpine) => {
         },
 
         get secretText() {
-            if (!this.hasSecret) {
-                return this.strings.secretNone;
-            }
             return this.secretVisible ? (this.secret ?? '') : this.strings.secretMask;
         },
 
@@ -145,21 +145,39 @@ export default (Alpine) => {
                 this.secretVisible = false;
                 return;
             }
+            this.secretVisible = (await this.loadSecret()) !== null;
+        },
+
+        async copySecret() {
+            const secret = this.secret ?? (await this.loadSecret());
+            if (secret === null || !(await writeClipboard(secret))) {
+                return;
+            }
+            this.secretCopied = true;
+            clearTimeout(this.secretCopiedTimer);
+            this.secretCopiedTimer = setTimeout(() => {
+                this.secretCopied = false;
+            }, 2000);
+        },
+
+        // Fetches the secret on demand; null when it cannot be read.
+        async loadSecret() {
             try {
                 const response = await fetch(config.secretUrl, {
                     headers: { Accept: 'application/json' },
                     credentials: 'same-origin',
                 });
                 if (response.status === 401) {
-                    return this.endSession();
+                    this.endSession();
+                    return null;
                 }
                 if (!response.ok) {
-                    return;
+                    return null;
                 }
                 this.secret = (await response.json()).secret;
-                this.secretVisible = true;
+                return this.secret;
             } catch {
-                this.secretVisible = false;
+                return null;
             }
         },
 

@@ -78,3 +78,6 @@ export function remainingDays(seconds) {
     if (!Number.isFinite(seconds) || seconds <= 0) return 0;
     return Math.ceil(seconds / 86400);
 }
+
+/** True during the final minute of a lesson, when the beamer starts a visible countdown. */
+export const isLastMinute = (secondsRemaining) => secondsRemaining > 0 && secondsRemaining <= 60;

@@ -1,12 +1,10 @@
-import { clockOffset, formatRemaining, remainingDays, secondsLeft } from '../core/time.js';
+import { clockOffset, formatRemaining, isLastMinute, secondsLeft } from '../core/time.js';
 import { stepFontScale } from '../core/fontScale.js';
 
 const FONT_KEY = 'lemurmail.beamer.fontScale';
 const HIDE_KEY = 'lemurmail.beamer.hidePins';
 
 const nowSeconds = () => Math.floor(Date.now() / 1000);
-
-const DAY_SECONDS = 86400;
 
 // Per-viewer convenience only: storage may be blocked or unavailable.
 function load(key, fallback) {
@@ -34,14 +32,10 @@ export default (Alpine) => {
         scale: 100,
         hidePins: false,
         clockTemplate: '',
-        daysOne: '',
-        daysOther: '',
 
         init() {
             this.endsAt = Number(this.$el.dataset.endsAt);
             this.clockTemplate = this.$el.dataset.clockTemplate;
-            this.daysOne = this.$el.dataset.daysOne;
-            this.daysOther = this.$el.dataset.daysOther;
             this.offset = clockOffset(Number(this.$el.dataset.serverNow), nowSeconds());
             this.scale = Number(load(FONT_KEY, 100));
             this.hidePins = load(HIDE_KEY, '0') === '1';
@@ -58,12 +52,12 @@ export default (Alpine) => {
             }
         },
 
-        // Whole days while a day or more is left, the clock below that.
+        // The countdown is only shown in the final minute; before that it would just distract.
+        get lastMinute() {
+            return isLastMinute(this.left);
+        },
+
         get remaining() {
-            if (this.left >= DAY_SECONDS) {
-                const days = remainingDays(this.left);
-                return (days === 1 ? this.daysOne : this.daysOther).replace(':count', String(days));
-            }
             return this.clockTemplate.replace(':time', formatRemaining(this.left));
         },
 
