@@ -23,6 +23,8 @@ export default (Alpine) => {
         loaded: false,
         loadError: false,
         failures: 0,
+        pollTimer: null,
+        refreshing: false,
         selectedId: null,
         detail: null,
         textOnly: false,
@@ -75,7 +77,7 @@ export default (Alpine) => {
                 this.failures += 1;
                 this.loadError = true;
             }
-            setTimeout(() => this.poll(), pollDelay(config.pollMs, this.failures, MAX_POLL_DELAY_MS));
+            this.pollTimer = setTimeout(() => this.poll(), pollDelay(config.pollMs, this.failures, MAX_POLL_DELAY_MS));
         },
 
         receive(data) {
@@ -90,13 +92,29 @@ export default (Alpine) => {
             this.select(nextSelection(this.messages, this.selectedId));
         },
 
-        async select(id) {
-            if (id === this.selectedId) {
+        // Reloads the list and the open mail right now instead of waiting for the next poll.
+        async reload() {
+            if (this.refreshing) {
+                return;
+            }
+            this.refreshing = true;
+            clearTimeout(this.pollTimer);
+            await this.poll();
+            if (this.selectedId !== null) {
+                await this.select(this.selectedId, true);
+            }
+            this.refreshing = false;
+        },
+
+        async select(id, force = false) {
+            if (id === this.selectedId && !force) {
                 return;
             }
             this.selectedId = id;
-            this.detail = null;
-            this.view = 'text';
+            if (!force) {
+                this.detail = null;
+                this.view = 'text';
+            }
             if (id === null) {
                 return;
             }

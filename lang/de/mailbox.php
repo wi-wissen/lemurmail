@@ -28,6 +28,8 @@ return [
     'select_mail' => 'Wähle links eine Mail aus.',
     'mail_loading' => 'Mail wird geladen …',
     'from' => 'Von',
+    'reload' => 'Neu laden',
+    'reloading' => 'Lade …',
     'view_text_only' => 'Nur Text anzeigen',
     'view_formatted' => 'Formatierte Ansicht anzeigen',
     'no_text_part' => 'Diese Mail enthält keinen reinen Text-Teil. Zeige die formatierte Ansicht an.',

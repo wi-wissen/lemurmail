@@ -28,6 +28,8 @@ return [
     'select_mail' => 'Select a mail on the left.',
     'mail_loading' => 'Loading mail …',
     'from' => 'From',
+    'reload' => 'Reload',
+    'reloading' => 'Loading …',
     'view_text_only' => 'Show text only',
     'view_formatted' => 'Show formatted view',
     'no_text_part' => 'This mail has no plain-text part. Show the formatted view.',

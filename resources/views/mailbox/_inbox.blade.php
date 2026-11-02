@@ -12,6 +12,8 @@
             'noSubject' => __('mailbox.no_subject'),
             'mailLoading' => __('mailbox.mail_loading'),
             'deleteConfirm' => __('mailbox.delete_confirm'),
+            'reload' => __('mailbox.reload'),
+            'reloading' => __('mailbox.reloading'),
             'viewTextOnly' => __('mailbox.view_text_only'),
             'viewFormatted' => __('mailbox.view_formatted'),
                         'secretMask' => '••••••••••',
@@ -42,7 +44,14 @@
     <div class="flex flex-1 flex-col lg:flex-row">
     <section class="flex flex-col border-b border-line bg-surface lg:w-[360px] lg:shrink-0 lg:border-b-0 lg:border-r"
              aria-label="{{ __('mailbox.inbox_title') }}">
-        <p class="border-b border-line px-6 py-4 text-[15px] text-ink-soft" x-text="countText">{{ __('mailbox.messages_loading') }}</p>
+        <div class="flex items-center justify-between gap-3 border-b border-line px-6 py-3">
+            <p class="text-[15px] text-ink-soft" x-text="countText">{{ __('mailbox.messages_loading') }}</p>
+            <button type="button" @click="reload()" :disabled="refreshing"
+                    class="inline-flex min-h-[40px] shrink-0 items-center gap-2 rounded-lg border-[1.5px] border-line-strong bg-surface px-3 text-[15px] font-bold text-ink hover:bg-paper disabled:opacity-60">
+                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" :class="refreshing ? 'animate-spin' : ''"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2.5v3h-3"/></svg>
+                <span x-text="refreshing ? strings.reloading : strings.reload">{{ __('mailbox.reload') }}</span>
+            </button>
+        </div>
 
         <ul class="divide-y divide-line">
             <template x-for="message in messages" :key="message.id">
