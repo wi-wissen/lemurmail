@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mergeMessages, nextSelection, pollDelay } from './inbox.js';
+import { chooseView, mergeMessages, nextSelection, pollDelay } from './inbox.js';
 
 const m = (id, receivedAt, subject = 's' + id) => ({ id, from: 'a@b.example', subject, receivedAt });
 
@@ -55,4 +55,19 @@ describe('pollDelay', () => {
         expect(pollDelay(10000, 50, 60000)).toBe(60000);
     });
     it('treats negative failures as zero', () => expect(pollDelay(10000, -2, 60000)).toBe(10000));
+});
+
+describe('chooseView', () => {
+    it('opens HTML mails formatted by default', () => {
+        expect(chooseView(true, false)).toBe('html');
+    });
+
+    it('shows text when the reader chose text only', () => {
+        expect(chooseView(true, true)).toBe('text');
+    });
+
+    it('shows text for mails without HTML', () => {
+        expect(chooseView(false, false)).toBe('text');
+        expect(chooseView(false, true)).toBe('text');
+    });
 });
