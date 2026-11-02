@@ -130,7 +130,7 @@ it survives container updates and can be backed up like any file.
 2. Create the data folder for the SQLite database. The container runs as uid 1000:
 
    ```bash
-   mkdir -p data && sudo chown 1000:1000 data
+   mkdir -p data storage && sudo chown 1000:1000 data storage
    ```
 
    SQLite is enough for this service: a few dozen teachers and mail in the hundreds per day is far below what it

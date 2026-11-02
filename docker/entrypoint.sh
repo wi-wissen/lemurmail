@@ -41,8 +41,9 @@ case "$APP_URL" in
     https://*) : "${SESSION_SECURE_COOKIE:=true}"; export SESSION_SECURE_COOKIE ;;
 esac
 
-# Logs live next to the database (host volume), so they survive the container.
-mkdir -p "$DB_DIR/logs"
+# /app/storage is a host volume (docker-compose.yml): create the folders Laravel needs, because the mount starts empty.
+[ -w /app/storage ] || fail "/app/storage is not writable for uid $(id -u). Fix on the host: mkdir -p storage && sudo chown $(id -u):$(id -g) storage"
+mkdir -p storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/views storage/app/public
 
 case "${MAIL_MAILER:-smtp}" in
     lettermint) [ -n "$LETTERMINT_PROJECT_TOKEN" ] || echo "WARNING: LETTERMINT_PROJECT_TOKEN is not set, so verification and approval mails cannot be sent." >&2 ;;

@@ -43,7 +43,6 @@ ENV APP_ENV=production \
     APP_TIMEZONE=Europe/Berlin \
     LOG_CHANNEL=stack \
     LOG_STACK=stderr,daily \
-    LOG_PATH=/data/logs/laravel.log \
     LOG_LEVEL=info \
     DB_CONNECTION=sqlite \
     DB_DATABASE=/data/database.sqlite \
