@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProfileController;
@@ -7,6 +8,9 @@ use Illuminate\Support\Facades\Route;
 
 // Language switch (stored in the session, read by App\Http\Middleware\SetLocale).
 Route::get('/lang/{locale}', LocaleController::class)->name('locale');
+
+// ALTCHA challenge for the captcha widget (public, rate-limited).
+Route::get('/captcha/challenge', CaptchaController::class)->middleware('throttle:60,1')->name('captcha.challenge');
 
 // Each area owns its route file.
 require __DIR__.'/mailbox.php';   // students: "/" (name: home), inbox, secret

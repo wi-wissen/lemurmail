@@ -31,7 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Never flash PINs, secrets or captcha solutions back into the session after a validation error.
-        $exceptions->dontFlash(['pin', 'secret', 'frc-captcha-solution']);
+        $exceptions->dontFlash(['pin', 'secret', 'altcha']);
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );

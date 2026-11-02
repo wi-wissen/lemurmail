@@ -8,7 +8,6 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 
 function register($test, string $email, array $extra = [])
@@ -100,32 +99,22 @@ it('lets an unverified teacher verify but not use the app', function () {
 });
 
 it('requires the captcha for registration and password reset when enabled', function () {
-    config(['friendlycaptcha.enabled' => true, 'friendlycaptcha.secret' => 's', 'friendlycaptcha.sitekey' => 'k']);
+    enableCaptcha();
     OrganizationDomain::create(['domain' => 'schule.example.org']);
 
-    register($this, 'lehrer@schule.example.org')->assertSessionHasErrors('frc-captcha-solution');
-    $this->post('/forgot-password', ['email' => 'lehrer@schule.example.org'])->assertSessionHasErrors('frc-captcha-solution');
+    register($this, 'lehrer@schule.example.org')->assertSessionHasErrors('altcha');
+    $this->post('/forgot-password', ['email' => 'lehrer@schule.example.org'])->assertSessionHasErrors('altcha');
 
-    Http::fake(['*' => Http::sequence()
-        ->push(['success' => false, 'errors' => ['solution_invalid']])
-        ->push(['success' => true])]);
-    register($this, 'lehrer@schule.example.org', ['frc-captcha-solution' => 'bad'])->assertSessionHasErrors('frc-captcha-solution');
+    register($this, 'lehrer@schule.example.org', ['altcha' => 'bad'])->assertSessionHasErrors('altcha');
     expect(User::count())->toBe(0);
 
-    register($this, 'lehrer@schule.example.org', ['frc-captcha-solution' => 'good'])->assertRedirect(route('verification.notice'));
-    Http::assertSent(fn ($req) => $req['solution'] === 'good' && $req['secret'] === 's' && $req['sitekey'] === 'k');
+    register($this, 'lehrer@schule.example.org', ['altcha' => solvedCaptcha()])->assertRedirect(route('verification.notice'));
 });
 
-it('accepts the registration when the captcha service itself is down', function () {
-    config(['friendlycaptcha.enabled' => true]);
-    Http::fake(['*' => Http::response('', 503)]);
-    register($this, 'lehrer@andere-schule.example', ['frc-captcha-solution' => 'x'])->assertRedirect(route('verification.notice'));
-});
-
-it('renders the captcha widget on register, login-reset and mailbox pages when enabled', function () {
-    config(['friendlycaptcha.enabled' => true, 'friendlycaptcha.sitekey' => 'SITEKEY123']);
-    $this->get('/register')->assertSee('SITEKEY123', false);
-    $this->get('/forgot-password')->assertSee('SITEKEY123', false);
+it('renders the captcha widget on register and password-reset pages when enabled', function () {
+    enableCaptcha();
+    $this->get('/register')->assertSee('<altcha-widget', false);
+    $this->get('/forgot-password')->assertSee('<altcha-widget', false);
 });
 
 it('creates a verified super admin via the artisan command', function () {

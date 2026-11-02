@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Mailbox;
 
-use App\Rules\FriendlyCaptcha;
+use App\Rules\Captcha;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -19,12 +19,12 @@ class LoginRequest extends FormRequest
     /** @return array<string, array<int, mixed>> */
     public function rules(): array
     {
-        $captchaEnabled = (bool) config('friendlycaptcha.enabled');
+        $captchaEnabled = (bool) config('altcha.enabled');
 
         return [
             'address' => ['nullable', 'string', 'max:255'],
             'pin' => ['nullable', 'string', 'max:64'],
-            'frc-captcha-solution' => [$captchaEnabled ? 'required' : 'nullable', new FriendlyCaptcha],
+            'altcha' => [$captchaEnabled ? 'required' : 'nullable', new Captcha],
         ];
     }
 
@@ -32,7 +32,7 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'frc-captcha-solution.required' => __('captcha.required'),
+            'altcha.required' => __('captcha.required'),
         ];
     }
 }

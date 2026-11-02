@@ -18,7 +18,7 @@ which the Romans drove out of the house at the festival of Lemuria. Mail that no
   the PINs.
 - **Sender whitelist:** only mails from allowed senders are stored, with a default list per teacher and extra entries
   per address. Mails must come from an authenticated sender (DMARC, or DKIM/SPF for the From domain).
-- **Students:** address and PIN plus Friendly Captcha, rate-limited. The inbox refreshes every ~10 seconds. Text is
+- **Students:** address and PIN plus ALTCHA captcha, rate-limited. The inbox refreshes every ~10 seconds. Text is
   shown by default; HTML mails are shown in a sandboxed iframe with purified markup, a strict Content Security Policy
   and no remote images.
 - **Secrets:** an optional secret per address (stored encrypted), visible only after PIN login.
@@ -178,16 +178,15 @@ Variables marked *required* must be set in production. The values in `.env.examp
 | `IMPRINT_URL` | – | Full URL of the operator's imprint. The footer link only appears when set. |
 | `PRIVACY_URL` | – | Full URL of the operator's privacy policy. The footer link only appears when set. |
 | `INBOUND_AUTH_MODE` | `aligned` | Sender authentication of whitelisted mail: `aligned` (DMARC, or DKIM/SPF aligned with the From domain), `authenticated` (any SPF/DKIM/DMARC pass) or `off` (whitelist only). Relax it if mail of a legitimate service is rejected. |
-| `PIN_IP_MAX_ATTEMPTS` | `0` | Failed PIN logins per IP in 15 minutes. `0` disables the IP limit (recommended: a whole school shares one IP). Logins are limited per browser session (5) and per address (50) and need the Friendly Captcha. |
+| `PIN_IP_MAX_ATTEMPTS` | `0` | Failed PIN logins per IP in 15 minutes. `0` disables the IP limit (recommended: a whole school shares one IP). Logins are limited per browser session (5) and per address (50) and need the captcha. |
 | `MAX_PIN_DAYS` | `365` | Longest PIN validity when a teacher starts a lesson with an end date. |
 | `MAIL_RETENTION_DAYS` | `7` | Retention of stored mails in days. Hard-capped at 7. |
 | `DEFAULT_ADDRESS_LIMIT` | `200` | Default cap of addresses per teacher. |
 | `MAX_LESSON_MINUTES` | `720` | Longest allowed lesson or PIN validity in minutes. |
-| `FRIENDLY_CAPTCHA_ENABLED` | `false` (`true` in compose) | Turn Friendly Captcha on. Off only for local development. |
-| `FRIENDLY_CAPTCHA_SITEKEY` | – | Friendly Captcha site key (public, used by the forms). |
-| `FRIENDLY_CAPTCHA_SECRET` | – | Friendly Captcha API secret (used for server-side verification). |
-| `FRIENDLY_CAPTCHA_PUZZLE_ENDPOINT` | Friendly Captcha v1 puzzle API | Override only for testing. |
-| `FRIENDLY_CAPTCHA_VERIFY_ENDPOINT` | Friendly Captcha v1 siteverify API | Override only for testing. |
+| `ALTCHA_ENABLED` | `false` (`true` in compose) | Turn the [ALTCHA](https://altcha.org) captcha on. It runs on your own server (a small proof of work in the browser), needs no account and no keys. Off only for local development. |
+| `ALTCHA_COST`, `ALTCHA_COUNTER_MIN`, `ALTCHA_COUNTER_MAX` | `2000`, `300`, `1200` | Difficulty of the proof of work (PBKDF2 iterations x counter range). Raise them if bots become a problem. |
+| `ALTCHA_TTL` | `600` | Seconds a challenge stays valid (a solved one works only once). |
+| `ALTCHA_SECRET` | derived from `APP_KEY` | Optional signing secret of the challenges. |
 | `MAIL_MAILER` | `smtp` | Mailer for verification and notification mails. |
 | `MAIL_HOST` | `mailpit` | SMTP host. |
 | `MAIL_PORT` | `1025` (`587` in compose) | SMTP port. |

@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import 'friendly-challenge/widget';
+import 'altcha';
 import '@fontsource/atkinson-hyperlegible/400.css';
 import '@fontsource/atkinson-hyperlegible/700.css';
 import '@fontsource-variable/jetbrains-mono';

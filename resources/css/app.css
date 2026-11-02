@@ -17,65 +17,40 @@
 }
 
 @layer components {
-    /*
-     * Friendly Captcha injects its own stylesheet at runtime, so these selectors are one step more specific
-     * (element + class, or two classes) to win without !important.
-     */
-    div.frc-captcha {
-        @apply w-full min-w-0 max-w-none rounded-lg border-[1.5px] border-line-strong bg-surface pb-[18px] font-sans text-ink;
+    /* ALTCHA widget in the colours and type of the app (CSS variables of the widget). */
+    altcha-widget {
+        --altcha-max-width: 100%;
+        --altcha-border-width: 1.5px;
+        --altcha-border-radius: 8px;
+        --altcha-color-base: theme('colors.surface');
+        --altcha-color-base-content: theme('colors.ink.DEFAULT');
+        --altcha-color-primary: theme('colors.accent.DEFAULT');
+        --altcha-color-primary-content: #fff;
+        --altcha-color-success: theme('colors.accent.DEFAULT');
+        --altcha-color-error: theme('colors.danger.DEFAULT');
+        --altcha-color-neutral: theme('colors.line.strong');
+        --altcha-checkbox-size: 24px;
+        --altcha-checkbox-border-color: theme('colors.line.strong');
+        --altcha-checkbox-outline-color: theme('colors.accent.DEFAULT');
+        display: block;
+        font-family: theme('fontFamily.sans');
+        font-size: 15px;
     }
 
-    div.frc-captcha .frc-container {
-        @apply min-h-[56px] px-1;
+    altcha-widget .altcha {
+        font-family: inherit;
     }
 
-    div.frc-captcha .frc-content,
-    div.frc-captcha .frc-content * {
-        @apply text-[15px] text-ink;
+    altcha-widget .altcha label {
+        font-size: 16px;
+        font-weight: 700;
+        color: theme('colors.ink.DEFAULT');
     }
 
-    div.frc-captcha .frc-content > span:first-child {
-        @apply font-bold;
-    }
-
-    div.frc-captcha .frc-icon {
-        fill: theme('colors.accent.DEFAULT');
-        stroke: theme('colors.accent.DEFAULT');
-    }
-
-    div.frc-captcha .frc-icon.frc-warning {
-        fill: theme('colors.danger.DEFAULT');
-        stroke: theme('colors.danger.DEFAULT');
-    }
-
-    div.frc-captcha .frc-button {
-        @apply rounded-md border border-accent bg-accent-soft py-1.5 text-[15px] font-bold text-ink;
-    }
-
-    div.frc-captcha .frc-button:hover {
-        background-color: #D3E8E0;
-    }
-
-    div.frc-captcha .frc-button:focus-visible {
-        @apply outline outline-2 outline-offset-2 outline-accent;
-    }
-
-    div.frc-captcha .frc-progress {
-        @apply rounded-full;
-        color: theme('colors.accent.DEFAULT');
-    }
-
-    div.frc-captcha .frc-progress::-webkit-progress-value {
-        background: theme('colors.accent.DEFAULT');
-    }
-
-    div.frc-captcha .frc-progress::-moz-progress-bar {
-        background: theme('colors.accent.DEFAULT');
-    }
-
-    div.frc-captcha .frc-banner,
-    div.frc-captcha .frc-banner * {
-        @apply text-[11px] text-ink-soft;
+    altcha-widget .altcha-footer,
+    altcha-widget .altcha-footer a {
+        font-size: 12px;
+        color: theme('colors.ink.soft');
     }
 }
 

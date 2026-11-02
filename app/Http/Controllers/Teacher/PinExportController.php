@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/** Hands out the live PINs of a group (only addresses whose PIN is valid right now). */
+/** Hands out the addresses of a group: the CSV lists all of them, the print view only those with a valid PIN. */
 class PinExportController extends Controller
 {
     use OwnsResources;
@@ -23,16 +23,20 @@ class PinExportController extends Controller
     public function csv(Request $request, Group $group): StreamedResponse
     {
         $this->owned($request, $group);
-        $addresses = $this->livePins($group);
+        // Every address of the group (the file is also used to create the accounts elsewhere); PIN and validity
+        // stay empty where no PIN is valid right now.
+        $addresses = $group->addresses()->orderBy('local_part')->get();
+        $now = Clock::now();
 
-        return response()->streamDownload(function () use ($addresses): void {
+        return response()->streamDownload(function () use ($addresses, $now): void {
             $out = fopen('php://output', 'w');
             fputcsv($out, ['address', 'pin', 'valid_until']);
             foreach ($addresses as $address) {
+                $live = $address->pin_encrypted !== null && $address->pinIsValid($now);
                 fputcsv($out, [
                     $address->email(),
-                    $address->pin_encrypted,
-                    Carbon::createFromTimestamp($address->pin_expires_at)->toIso8601String(),
+                    $live ? $address->pin_encrypted : '',
+                    $live ? Carbon::createFromTimestamp($address->pin_expires_at)->toIso8601String() : '',
                 ]);
             }
             fclose($out);
