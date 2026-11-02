@@ -1,8 +1,7 @@
 # Production example: one container (FrankenPHP + Laravel), SQLite in a folder on the host.
 #
 # Setup:  1. cp .env.docker.example .env   and edit .env (that is the only file you have to edit)
-#         2. mkdir -p data && sudo chown 1000:1000 data
-#         3. docker compose up -d
+#         2. docker compose up -d   (the storage/ folder is created and prepared by the container)
 #
 # The app speaks plain HTTP on 8080 and binds to 127.0.0.1 only. Put a reverse proxy
 # (Caddy, nginx, Traefik, ...) in front that terminates TLS and forwards to 127.0.0.1:8080,
@@ -20,6 +19,7 @@ services:
         # All settings come from .env next to this file. After editing it: docker compose up -d
         env_file: .env
         volumes:
-            # SQLite database (database.sqlite plus its -wal/-shm files) and the generated app.key:
-            # mount the whole folder, not a single file.
-            - ./data:/data
+            # Everything that must survive the container: the SQLite database (database.sqlite plus its
+            # -wal/-shm files), the generated app.key and the logs (logs/laravel.log).
+            # Mount the whole folder, not a single file.
+            - ./storage:/app/storage

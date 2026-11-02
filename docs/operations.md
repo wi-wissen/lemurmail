@@ -16,7 +16,7 @@ SQLite database in the volume.
 
 ## Backup
 
-The data lives in the folder `data/` next to `docker-compose.yml` (mounted at `/data`): the SQLite database. While the
+The data lives in the folder `storage/` next to `docker-compose.yml` (mounted at `/app/storage`): the SQLite database, `app.key` and the logs. While the
 app runs, the folder also holds `database.sqlite-wal` and `database.sqlite-shm` (WAL mode), so **copying only the
 `.sqlite` file of a running app is not a safe backup**. Backups contain **personal data** (mails and addresses), so
 store them as carefully as the server.
@@ -24,11 +24,11 @@ store them as carefully as the server.
 Create a consistent copy while the app keeps running (`VACUUM INTO` is safe under concurrent writes):
 
 ```bash
-docker compose exec lemurmail php -r '(new PDO("sqlite:/data/database.sqlite"))->exec("VACUUM INTO \"/data/backup.sqlite\"");'
-mv data/backup.sqlite "./lemurmail-$(date +%F).sqlite"
+docker compose exec lemurmail php -r '(new PDO("sqlite:/app/storage/database.sqlite"))->exec("VACUUM INTO \"/app/storage/backup.sqlite\"");'
+mv storage/backup.sqlite "./lemurmail-$(date +%F).sqlite"
 ```
 
-If you left `APP_KEY` empty, the key is the file `data/app.key`: it is part of the backup, which means a stolen backup
+If you left `APP_KEY` empty, the key is the file `storage/app.key`: it is part of the backup, which means a stolen backup
 contains the key too. Set `APP_KEY` in `.env` instead if backups leave the server, and keep a copy of it in your password
 manager. Encrypted address secrets can only be read
 with the key that encrypted them, and a backup without the key does not restore them.
@@ -37,9 +37,9 @@ Restore (replace the files while the container is stopped; delete stale `-wal`/`
 
 ```bash
 docker compose down
-rm -f data/database.sqlite-wal data/database.sqlite-shm
-cp lemurmail-2026-10-01.sqlite data/database.sqlite
-sudo chown 1000:1000 data/database.sqlite
+rm -f storage/database.sqlite-wal storage/database.sqlite-shm
+cp lemurmail-2026-10-01.sqlite storage/database.sqlite
+sudo chown 1000:1000 storage/database.sqlite
 docker compose up -d
 ```
 

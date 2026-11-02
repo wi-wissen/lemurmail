@@ -120,21 +120,18 @@ HTTP API instead of SMTP; it is not needed here and not a dependency of this pro
 
 The production image is built from the `Dockerfile` in this repository and published to GitHub Container Registry
 on every version tag (`v1.2.3`). It contains one process that serves HTTP through FrankenPHP (Caddy + PHP) and runs
-the scheduler. The SQLite database lives in `/data`, which the compose file mounts from the folder `./data` on the host, so
-it survives container updates and can be backed up like any file.
+the scheduler. The SQLite database, the generated `app.key` and the logs live in `/app/storage`, which the compose file mounts from the
+folder `./storage` on the host, so they survive container updates and can be backed up like any file.
 
 1. Copy `docker-compose.yml` and `.env.docker.example` to the server. Rename the example to `.env` and edit it: that
    file is the only thing you configure, the container reads it directly (see the [configuration table](#configuration)).
    You do not need to create an `APP_KEY`: if it is empty, the container generates one on the first start and keeps it in
-   `data/app.key`. Set it yourself if you prefer to store the key apart from the data.
-2. Create the data folder for the SQLite database. The container runs as uid 1000:
-
-   ```bash
-   mkdir -p data && sudo chown 1000:1000 data
-   ```
+   `storage/app.key`. Set it yourself if you prefer to store the key apart from the data.
+2. Nothing to prepare: on the first start the container creates `storage/` next to `docker-compose.yml`
+   and gives it to its app user (uid 1000).
 
    SQLite is enough for this service: a few dozen teachers and mail in the hundreds per day is far below what it
-   handles. The database runs in WAL mode, so `data/` also holds `database.sqlite-wal` and `-shm` while the app runs;
+   handles. The database runs in WAL mode, so `storage/` also holds `database.sqlite-wal` and `-shm` while the app runs;
    always mount and back up the folder, never only the file.
 3. Start the container:
 
@@ -167,7 +164,7 @@ Variables marked *required* must be set in production. The values in `.env.examp
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `APP_KEY` | – (generated) | Encryption key. In the container it is generated on the first start and stored in `data/app.key` when empty. To set it yourself: `docker run --rm ghcr.io/wi-wissen/lemurmail:latest php artisan key:generate --show`. Back it up: without it stored secrets cannot be read. |
+| `APP_KEY` | – (generated) | Encryption key. In the container it is generated on the first start and stored in `storage/app.key` when empty. To set it yourself: `docker run --rm ghcr.io/wi-wissen/lemurmail:latest php artisan key:generate --show`. Back it up: without it stored secrets cannot be read. |
 | `APP_URL` | `http://localhost` | Public URL, for example `https://tmp-mail.example.org`. |
 | `APP_NAME` | `Lemur Mail` | Name shown in the UI and mail sender name. |
 | `APP_ENV` | `local` (`production` in the image) | Environment. |
@@ -199,7 +196,8 @@ Variables marked *required* must be set in production. The values in `.env.examp
 | `MAIL_FROM_ADDRESS` | `hello@example.com` (*required* in production) | Sender address of outgoing mails. |
 | `MAIL_FROM_NAME` | `${APP_NAME}` | Sender name of outgoing mails. |
 | `DB_CONNECTION` | `sqlite` | Database driver. The app is built for SQLite. |
-| `DB_DATABASE` | `database/database.sqlite` (`/data/database.sqlite` in the image) | Path to the SQLite file. |
+| `DB_DATABASE` | `database/database.sqlite` (`/app/storage/database.sqlite` in the image) | Path to the SQLite file. |
+| `MAIL_MAILER` | `smtp` | `lettermint` sends system mail over the Lettermint HTTPS API (needs `LETTERMINT_PROJECT_TOKEN`; works when outgoing SMTP ports are blocked). `MAIL_TIMEOUT` (default 10 s) limits SMTP/API waits. |
 | `SESSION_DRIVER` | `database` | Session storage. |
 | `SESSION_LIFETIME` | `120` | Session lifetime in minutes. |
 | `SESSION_SECURE_COOKIE` | unset (`true` in compose) | Send session cookies over HTTPS only. |
