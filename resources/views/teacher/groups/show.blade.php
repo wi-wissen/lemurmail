@@ -16,8 +16,8 @@
                         {{ trans_choice('teacher.groups.no_senders_silent', $silentCount, ['count' => $silentCount, 'total' => $addresses->count()]) }}
                     @endif
                 </p>
-                <button type="button" @click="select('senders')"
-                    class="mt-2 min-h-[44px] font-bold text-accent underline underline-offset-4 hover:text-accent-hover">{{ __('teacher.groups.no_senders_action') }}</button>
+                <a href="{{ route('senders.index') }}"
+                    class="mt-2 inline-flex min-h-[44px] items-center font-bold text-accent underline underline-offset-4 hover:text-accent-hover">{{ __('teacher.groups.no_senders_action') }}</a>
             </x-alert>
         @endif
 
@@ -28,10 +28,6 @@
                 :aria-selected="tab === 'addresses' ? 'true' : 'false'"
                 :class="tab === 'addresses' ? 'border-accent text-ink' : 'border-transparent text-ink-soft hover:text-ink'"
                 class="-mb-px min-h-[48px] border-b-[3px] px-5 text-base font-bold">{{ __('teacher.groups.tab_addresses') }}</button>
-            <button type="button" role="tab" id="tab-senders" aria-controls="panel-senders" @click="select('senders')"
-                :aria-selected="tab === 'senders' ? 'true' : 'false'"
-                :class="tab === 'senders' ? 'border-accent text-ink' : 'border-transparent text-ink-soft hover:text-ink'"
-                class="-mb-px min-h-[48px] border-b-[3px] px-5 text-base font-bold">{{ __('teacher.groups.tab_senders') }}</button>
             <button type="button" role="tab" id="tab-settings" aria-controls="panel-settings" @click="select('settings')"
                 :aria-selected="tab === 'settings' ? 'true' : 'false'"
                 :class="tab === 'settings' ? 'border-accent text-ink' : 'border-transparent text-ink-soft hover:text-ink'"
@@ -94,13 +90,15 @@
                         </thead>
                         @foreach ($addresses as $address)
                             @php($pin = $address->pin_encrypted !== null && $address->pinIsValid($now) ? PinFormat::display($address->pin_encrypted) : null)
-                            <tbody class="border-t border-line align-top">
+                            <tbody class="border-t border-line align-top" x-data="{ open: @js($errors->getBag('address_sender')->any() && (int) old('row') === $address->id) }">
                                 <tr>
                                     <td class="px-6 py-3 font-mono">{{ $address->local_part }}</td>
                                     <td class="px-3 py-3 font-mono tracking-wider">{{ $pin ?? __('teacher.addresses.pin_none') }}</td>
                                     <td class="px-3 py-3">{{ $address->messages_count }}</td>
                                     <td class="px-6 py-3">
                                         <div class="flex flex-wrap justify-end gap-2">
+                                            <button type="button" @click="open = ! open" :aria-expanded="open ? 'true' : 'false'" aria-controls="senders-{{ $address->id }}"
+                                                class="inline-flex min-h-[40px] items-center px-3 text-[15px] font-bold text-accent underline">{{ __('teacher.addresses.senders_action') }}@if ($address->senderRules->isNotEmpty()) ({{ $address->senderRules->count() }})@endif</button>
                                             <a href="{{ route('addresses.inbox', $address) }}" class="inline-flex min-h-[40px] items-center px-3 text-[15px] font-bold text-accent underline">{{ __('teacher.addresses.inbox') }}</a>
                                             @if (Route::has('addresses.pin.regenerate'))
                                                 <form method="POST" action="{{ route('addresses.pin.regenerate', $address) }}">
@@ -116,11 +114,9 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="senders-{{ $address->id }}" x-show="open" @if (! ($errors->getBag('address_sender')->any() && (int) old('row') === $address->id)) x-cloak @endif>
                                     <td colspan="4" class="px-6 pb-4">
-                                        <details>
-                                            <summary class="min-h-[40px] cursor-pointer py-2 text-[15px] font-bold text-accent">{{ __('teacher.addresses.extra_senders', ['count' => $address->senderRules->count()]) }}</summary>
-                                            <div class="mt-2 flex flex-col gap-3">
+                                        <div class="mt-2 flex flex-col gap-3">
                                                 <p class="text-[15px] font-bold">{{ __('teacher.senders.extra_for_address') }}</p>
                                                 <p class="text-[15px] leading-snug text-ink-soft">{{ __('teacher.addresses.extra_senders_hint') }}</p>
                                                 @forelse ($address->senderRules as $rule)
@@ -138,13 +134,16 @@
                                                 @endforelse
                                                 <form method="POST" action="{{ route('addresses.senders.store', $address) }}" class="flex flex-wrap gap-2">
                                                     @csrf
+                                                    <input type="hidden" name="row" value="{{ $address->id }}">
                                                     <x-text-input name="pattern" type="text" class="min-w-0 flex-1 font-mono text-[15px]"
                                                         aria-label="{{ __('teacher.senders.add_label') }}" placeholder="{{ __('teacher.senders.placeholder') }}" required />
                                                     <x-secondary-button class="min-h-[40px] px-4 text-[15px]">{{ __('teacher.senders.add') }}</x-secondary-button>
                                                 </form>
-                                                <x-input-error :messages="$errors->getBag('address_sender')->get('pattern')" />
+                                                @if ((int) old('row') === $address->id)
+                                                    <x-input-error :messages="$errors->getBag('address_sender')->get('pattern')" />
+                                                @endif
                                             </div>
-                                        </details>
+                                        
                                     </td>
                                 </tr>
                             </tbody>
@@ -154,10 +153,6 @@
             @endif
         </section>
 
-        </div>
-
-        <div role="tabpanel" id="panel-senders" aria-labelledby="tab-senders" x-show="tab === 'senders'" @if ($initialTab !== 'senders') x-cloak @endif class="flex flex-col gap-6">
-            @include('teacher.senders._list', ['rules' => $defaultRules, 'showScope' => true])
         </div>
 
         <div role="tabpanel" id="panel-settings" aria-labelledby="tab-settings" x-show="tab === 'settings'" @if ($initialTab !== 'settings') x-cloak @endif class="flex flex-col gap-6">

@@ -24,14 +24,11 @@ it('explains that deleting a group deletes its addresses and mails and asks for 
     expect(__('teacher.groups.delete_hint', ['count' => 3], 'de'))->toContain('3')->not->toContain('bleiben erhalten');
 });
 
-it('lets a teacher edit the sender list on the group page and says it applies to all addresses', function () {
+it('does not repeat the global sender list on the group page', function () {
     [$t, $g] = clarityGroup();
     $html = $this->actingAs($t)->get(route('groups.show', $g))->getContent();
 
-    expect($html)->toContain('@example-dienst.example')
-        ->toContain('action="'.route('senders.store').'"')
-        ->toContain('action="'.route('senders.destroy', SenderRule::first()).'"')
-        ->toContain(e(__('teacher.senders.scope_all')));
+    expect($html)->not->toContain('action="'.route('senders.store').'"');
 });
 
 it('still lets a teacher add extra senders for one address, clearly labelled', function () {
@@ -67,14 +64,14 @@ it('opens the beamer in a new tab and keeps the label readable on hover', functi
     expect($m[0])->toContain('target="_blank"')->toContain('rel="noopener"')->toContain('hover:text-white');
 });
 
-it('splits the group page into addresses, allowed senders and settings tabs', function () {
+it('splits the group page into addresses and settings tabs (the sender list is not group-specific, so no tab)', function () {
     [$t, $g] = clarityGroup();
     $html = $this->actingAs($t)->get(route('groups.show', $g))->assertOk()->getContent();
 
-    foreach (['addresses', 'senders', 'settings'] as $tab) {
+    foreach (['addresses', 'settings'] as $tab) {
         expect($html)->toContain('id="panel-'.$tab.'"')->toContain('id="tab-'.$tab.'"');
     }
-    expect($html)->toContain("groupTabs('addresses')");
+    expect($html)->not->toContain('id="tab-senders"')->toContain("groupTabs('addresses')");
 });
 
 it('opens the settings tab when renaming the group failed validation', function () {
@@ -112,4 +109,16 @@ it('shows no sender warning when a default sender exists', function () {
     [$t, $g] = clarityGroup();
 
     $this->actingAs($t)->get(route('groups.show', $g))->assertDontSee(__('teacher.groups.no_senders_title'));
+});
+
+it('keeps the per-address senders collapsed behind an action and opens the row that had an error', function () {
+    [$t, $g, $addresses] = clarityGroup();
+    $first = $addresses[0];
+
+    $html = $this->actingAs($t)->get(route('groups.show', $g))->getContent();
+    expect($html)->toContain('aria-controls="senders-'.$first->id.'"')->not->toContain('<details');
+
+    $this->from(route('groups.show', $g))->post(route('addresses.senders.store', $first), ['pattern' => 'kein gültiger Wert!', 'row' => $first->id])
+        ->assertRedirect(route('groups.show', $g));
+    expect($this->get(route('groups.show', $g))->getContent())->toContain('x-data="{ open: true }"');
 });

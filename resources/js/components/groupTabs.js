@@ -1,4 +1,4 @@
-const TABS = ['addresses', 'senders', 'settings'];
+const TABS = ['addresses', 'settings'];
 
 // Tabs of the group page. The panels are all rendered by the server; this only toggles them
 // and keeps the choice in the URL hash so a reload (or a link) lands on the same tab.

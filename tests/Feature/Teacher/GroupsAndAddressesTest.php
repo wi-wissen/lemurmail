@@ -59,7 +59,7 @@ it('shows the group page with addresses, PINs hidden when none are valid', funct
 
     $this->actingAs($t)->get(route('groups.show', $g))->assertOk()
         ->assertSee('7a Informatik')->assertSee('klasse7a-01')->assertSee('klasse7a-02')->assertSee('T3WD 8HNP')
-        ->assertSee('@example-dienst.example');
+        ->assertDontSee(__('teacher.groups.no_senders_title'));
 });
 
 it('creates an address series in the group with zero padding', function () {

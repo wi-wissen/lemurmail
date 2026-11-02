@@ -39,7 +39,7 @@ class GroupController extends Controller
 
         return view('teacher.groups.show', [
             'group' => $group,
-            'initialTab' => $this->initialTab($request),
+            'initialTab' => $request->session()->get('errors')?->has('name') ? 'settings' : 'addresses',
             'now' => Clock::now(),
             'addresses' => $addresses,
             'defaultRules' => $defaultRules,
@@ -66,17 +66,5 @@ class GroupController extends Controller
         });
 
         return redirect()->route('groups.index')->with('status', __('teacher.flash.group_deleted'));
-    }
-
-    /** Tab of the group page that is open on load: the one a validation error or a sender change came from. */
-    private function initialTab(Request $request): string
-    {
-        $errors = $request->session()->get('errors');
-
-        return match (true) {
-            (bool) $errors?->has('name') => 'settings',
-            (bool) $errors?->has('pattern') => 'senders',
-            default => $request->session()->get('tab') === 'senders' ? 'senders' : 'addresses',
-        };
     }
 }

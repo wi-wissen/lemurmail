@@ -4,7 +4,6 @@ return [
     'groups' => [
         'tabs_label' => 'Bereiche der Gruppe',
         'tab_addresses' => 'Adressen',
-        'tab_senders' => 'Erlaubte Absender',
         'no_senders_title' => 'Es kommen keine Mails an',
         'no_senders_empty' => 'Du hast noch keinen erlaubten Absender angelegt. Ohne ihn lassen sich keine Adressen anlegen und es kommt keine Mail an.',
         'no_senders_silent' => '{1} Eine von :total Adressen hat keinen erlaubten Absender, dort kommt keine Mail an.|[2,*] :count von :total Adressen haben keinen erlaubten Absender, dort kommt keine Mail an.',
@@ -36,6 +35,7 @@ return [
         'single_label' => 'Einzelne Adresse',
         'local_part' => 'Adresse (vor dem @)',
         'create_single' => 'Adresse anlegen',
+        'senders_action' => 'Absender',
         'extra_senders' => 'Zusätzliche Absender (:count)',
         'extra_senders_hint' => 'Gelten nur für diese Adresse, zusätzlich zur Standardliste.',
         'no_extra_senders' => 'Keine zusätzlichen Absender.',

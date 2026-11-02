@@ -30,7 +30,7 @@ class SenderController extends Controller
             'pattern' => $request->normalizedPattern(),
         ]);
 
-        return redirect()->back(fallback: route('senders.index'))->with('status', __('teacher.flash.sender_added'))->with('tab', 'senders');
+        return redirect()->back(fallback: route('senders.index'))->with('status', __('teacher.flash.sender_added'));
     }
 
     public function storeForAddress(AddressSenderStoreRequest $request, Address $address): RedirectResponse
@@ -49,6 +49,6 @@ class SenderController extends Controller
     {
         $this->owned($request, $rule)->delete();
 
-        return redirect()->back(fallback: route('senders.index'))->with('status', __('teacher.flash.sender_removed'))->with('tab', 'senders');
+        return redirect()->back(fallback: route('senders.index'))->with('status', __('teacher.flash.sender_removed'));
     }
 }

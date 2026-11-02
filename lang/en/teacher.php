@@ -4,7 +4,6 @@ return [
     'groups' => [
         'tabs_label' => 'Group sections',
         'tab_addresses' => 'Addresses',
-        'tab_senders' => 'Allowed senders',
         'no_senders_title' => 'No mail will arrive',
         'no_senders_empty' => 'You have not added an allowed sender yet. Without one you cannot create addresses and no mail is accepted.',
         'no_senders_silent' => '{1} One of :total addresses has no allowed sender, so no mail arrives there.|[2,*] :count of :total addresses have no allowed sender, so no mail arrives there.',
@@ -36,6 +35,7 @@ return [
         'single_label' => 'Single address',
         'local_part' => 'Address (before the @)',
         'create_single' => 'Create address',
+        'senders_action' => 'Senders',
         'extra_senders' => 'Additional senders (:count)',
         'extra_senders_hint' => 'Apply to this address only, in addition to the default list.',
         'no_extra_senders' => 'No additional senders.',
