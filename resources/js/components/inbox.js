@@ -1,5 +1,5 @@
 import { writeClipboard } from './copyButton.js';
-import { mergeMessages, nextSelection, pollDelay } from '../core/inbox.js';
+import { chooseView, mergeMessages, nextSelection, pollDelay } from '../core/inbox.js';
 import { clockOffset, formatClock, remainingDays, remainingMinutes, secondsLeft } from '../core/time.js';
 
 const MAX_POLL_DELAY_MS = 60000;
@@ -25,6 +25,7 @@ export default (Alpine) => {
         failures: 0,
         selectedId: null,
         detail: null,
+        textOnly: false,
         view: 'text',
         secretVisible: false,
         secretCopied: false,
@@ -109,10 +110,17 @@ export default (Alpine) => {
                 }
                 if (response.ok && this.selectedId === id) {
                     this.detail = await response.json();
+                    this.view = chooseView(this.detail.html_document !== null, this.textOnly);
                 }
             } catch {
                 // The next poll reconciles the list; the detail stays empty until then.
             }
+        },
+
+        // Switches between the formatted mail and plain text; the choice stays for the next mails.
+        toggleView() {
+            this.textOnly = this.view === 'html';
+            this.view = chooseView(this.detail?.html_document !== null, this.textOnly);
         },
 
         async remove() {

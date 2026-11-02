@@ -12,6 +12,8 @@
             'noSubject' => __('mailbox.no_subject'),
             'mailLoading' => __('mailbox.mail_loading'),
             'deleteConfirm' => __('mailbox.delete_confirm'),
+            'viewTextOnly' => __('mailbox.view_text_only'),
+            'viewFormatted' => __('mailbox.view_formatted'),
                         'secretMask' => '••••••••••',
             'secretShow' => __('mailbox.secret_show'),
             'secretCopy' => __('mailbox.secret_copy'),
@@ -76,23 +78,21 @@
                         <span x-text="detail ? clock(detail.received_at) : ''"></span>
                     </div>
                 </div>
-                <button type="button" x-show="detail" @click="remove()"
-                        class="min-h-[44px] px-3 text-base font-bold text-ink-soft underline hover:text-danger focus-visible:text-danger">{{ __('common.delete') }}</button>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3" x-show="detail">
-                <button type="button" @click="view = 'text'"
-                        class="min-h-[40px] rounded-lg border-[1.5px] px-4 text-base font-bold"
-                        :class="view === 'text' ? 'border-ink bg-ink text-white' : 'border-line-strong bg-surface text-ink hover:bg-paper'"
-                        :aria-pressed="view === 'text' ? 'true' : 'false'">{{ __('mailbox.view_text') }}</button>
-                <button type="button" @click="view = 'html'" x-show="detail?.html_document"
-                        class="min-h-[40px] rounded-lg border-[1.5px] px-4 text-base font-bold"
-                        :class="view === 'html' ? 'border-ink bg-ink text-white' : 'border-line-strong bg-surface text-ink hover:bg-paper'"
-                        :aria-pressed="view === 'html' ? 'true' : 'false'">{{ __('mailbox.view_html') }}</button>
-                <p x-show="view === 'html'" class="text-[15px] text-ink-soft">{{ __('mailbox.html_hint') }}</p>
+            <div class="flex flex-wrap items-center justify-between gap-3" x-show="detail">
+                <button type="button" x-show="detail?.html_document" @click="toggleView()"
+                        class="min-h-[40px] rounded-lg border-[1.5px] border-line-strong bg-surface px-4 text-base font-bold text-ink hover:bg-paper"
+                        x-text="view === 'html' ? strings.viewTextOnly : strings.viewFormatted">{{ __('mailbox.view_text_only') }}</button>
+                <button type="button" @click="remove()"
+                        class="ml-auto inline-flex min-h-[40px] items-center gap-2 rounded-lg border-[1.5px] border-line-strong bg-surface px-4 text-base font-bold text-ink-soft hover:border-danger hover:text-danger focus-visible:border-danger focus-visible:text-danger">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9h6.6L12 4M6.8 6.5v4.2M9.2 6.5v4.2"/></svg>
+                    {{ __('common.delete') }}
+                </button>
             </div>
 
             <div x-show="detail && view === 'text'" class="min-w-0 break-words rounded-lg border border-line bg-surface p-6 text-[18px] leading-relaxed">
+                <p x-show="detail && detail.text_segments.length === 0" class="italic text-ink-soft">{{ __('mailbox.no_text_part') }}</p>
                 <template x-for="(segment, index) in (detail?.text_segments ?? [])" :key="index">
                     <span class="whitespace-pre-wrap"><template x-if="segment.type === 'link'"><a :href="segment.value" rel="noopener noreferrer" target="_blank" class="break-all underline" x-text="segment.value"></a></template><template x-if="segment.type !== 'link'"><span x-text="segment.value"></span></template></span>
                 </template>
@@ -105,6 +105,7 @@
                         :srcdoc="detail.html_document"
                         title="{{ __('mailbox.mail_body') }}"></iframe>
             </template>
+            <p x-show="view === 'html' && detail?.html_document" class="text-[15px] text-ink-soft">{{ __('mailbox.html_hint') }}</p>
         </div>
     </section>
     </div>

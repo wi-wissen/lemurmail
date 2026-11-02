@@ -47,3 +47,14 @@ export function pollDelay(baseMs, failures, maxMs) {
     const n = Math.max(0, failures);
     return Math.min(baseMs * 2 ** n, maxMs);
 }
+
+/**
+ * Which view a mail opens in: the formatted (HTML) one when the mail has HTML, unless the reader
+ * switched to text only. Mails without HTML always show their text.
+ * @param {boolean} hasHtml
+ * @param {boolean} textOnly the reader's choice
+ * @returns {'html'|'text'}
+ */
+export function chooseView(hasHtml, textOnly) {
+    return hasHtml && !textOnly ? 'html' : 'text';
+}
