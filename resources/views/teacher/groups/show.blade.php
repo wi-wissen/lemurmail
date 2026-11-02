@@ -157,7 +157,7 @@
         </div>
 
         <div role="tabpanel" id="panel-senders" aria-labelledby="tab-senders" x-show="tab === 'senders'" @if ($initialTab !== 'senders') x-cloak @endif class="flex flex-col gap-6">
-            @include('teacher.senders._summary', ['rules' => $defaultRules])
+            @include('teacher.senders._list', ['rules' => $defaultRules, 'showScope' => true])
         </div>
 
         <div role="tabpanel" id="panel-settings" aria-labelledby="tab-settings" x-show="tab === 'settings'" @if ($initialTab !== 'settings') x-cloak @endif class="flex flex-col gap-6">

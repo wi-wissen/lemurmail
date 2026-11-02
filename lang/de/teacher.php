@@ -63,7 +63,6 @@ return [
         'remove' => 'Entfernen',
         'remove_label' => ':pattern entfernen',
         'empty' => 'Noch keine Absender eingetragen.',
-        'edit_default' => 'Standardliste bearbeiten',
         'extra_for_address' => 'Zusätzliche Absender nur für diese Adresse',
         'scope_all' => 'Diese Liste gilt für alle deine Adressen in allen Gruppen.',
         'scope_extra' => 'Für eine einzelne Adresse kannst du zusätzliche Absender in der Gruppe bei der jeweiligen Adresse eintragen.',

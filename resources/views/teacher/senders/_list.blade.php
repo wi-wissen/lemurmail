@@ -19,6 +19,10 @@
         </ul>
     @endif
 
+    @if ($showScope ?? false)
+        <p class="text-[15px] leading-snug text-ink-soft">{{ __('teacher.senders.scope_all') }} {{ __('teacher.senders.scope_extra') }}</p>
+    @endif
+
     <form method="POST" action="{{ route('senders.store') }}" class="flex flex-col gap-2">
         @csrf
         <label for="sender-pattern" class="text-base font-bold">{{ __('teacher.senders.add_label') }}</label>

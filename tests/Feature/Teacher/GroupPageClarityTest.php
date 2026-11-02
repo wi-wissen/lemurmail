@@ -24,15 +24,14 @@ it('explains that deleting a group deletes its addresses and mails and asks for 
     expect(__('teacher.groups.delete_hint', ['count' => 3], 'de'))->toContain('3')->not->toContain('bleiben erhalten');
 });
 
-it('shows the default sender list read-only on the group page and links to where it is edited', function () {
+it('lets a teacher edit the sender list on the group page and says it applies to all addresses', function () {
     [$t, $g] = clarityGroup();
     $html = $this->actingAs($t)->get(route('groups.show', $g))->getContent();
 
     expect($html)->toContain('@example-dienst.example')
-        ->toContain(route('senders.index'))
-        ->toContain(e(__('teacher.senders.edit_default')))
-        ->not->toContain('action="'.route('senders.store').'"')
-        ->not->toContain('action="'.route('senders.destroy', SenderRule::first()).'"');
+        ->toContain('action="'.route('senders.store').'"')
+        ->toContain('action="'.route('senders.destroy', SenderRule::first()).'"')
+        ->toContain(e(__('teacher.senders.scope_all')));
 });
 
 it('still lets a teacher add extra senders for one address, clearly labelled', function () {
@@ -54,7 +53,7 @@ it('has the new strings in both languages', function () {
     foreach (['de', 'en'] as $locale) {
         $teacher = trans('teacher', [], $locale);
         expect($teacher['groups'])->toHaveKeys(['delete_hint', 'delete_confirm']);
-        expect($teacher['senders'])->toHaveKeys(['edit_default', 'extra_for_address', 'scope_all', 'scope_extra']);
+        expect($teacher['senders'])->toHaveKeys(['extra_for_address', 'scope_all', 'scope_extra']);
     }
 });
 

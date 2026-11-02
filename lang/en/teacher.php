@@ -63,7 +63,6 @@ return [
         'remove' => 'Remove',
         'remove_label' => 'Remove :pattern',
         'empty' => 'No senders added yet.',
-        'edit_default' => 'Edit default list',
         'extra_for_address' => 'Extra senders for this address only',
         'scope_all' => 'This list applies to all your addresses in all groups.',
         'scope_extra' => 'For a single address you can add extra senders in the group, at that address.',
