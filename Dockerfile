@@ -28,7 +28,8 @@ ARG IMAGE_SOURCE
 LABEL org.opencontainers.image.source="${IMAGE_SOURCE}" \
       org.opencontainers.image.title="Lemur Mail"
 
-RUN install-php-extensions pdo_sqlite intl opcache
+RUN apk add --no-cache su-exec \
+    && install-php-extensions pdo_sqlite intl opcache
 
 # Non-root user. /data (SQLite) and /caddy (Caddy state) are the only writable paths besides storage and bootstrap/cache.
 RUN addgroup -S -g 1000 lemur \
@@ -61,7 +62,7 @@ RUN php artisan package:discover --ansi \
     && chmod 0755 /usr/local/bin/lemurmail-entrypoint \
     && chown -R lemur:lemur storage bootstrap/cache
 
-USER lemur
+# The entrypoint starts as root only to create/chown the mounted folders, then drops to "lemur" (su-exec).
 
 VOLUME ["/data"]
 EXPOSE 8080

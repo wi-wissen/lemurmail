@@ -127,11 +127,8 @@ it survives container updates and can be backed up like any file.
    file is the only thing you configure, the container reads it directly (see the [configuration table](#configuration)).
    You do not need to create an `APP_KEY`: if it is empty, the container generates one on the first start and keeps it in
    `data/app.key`. Set it yourself if you prefer to store the key apart from the data.
-2. Create the data folder for the SQLite database. The container runs as uid 1000:
-
-   ```bash
-   mkdir -p data storage && sudo chown 1000:1000 data storage
-   ```
+2. Nothing to prepare: on the first start the container creates `data/` and `storage/` next to `docker-compose.yml`
+   and gives them to its app user (uid 1000).
 
    SQLite is enough for this service: a few dozen teachers and mail in the hundreds per day is far below what it
    handles. The database runs in WAL mode, so `data/` also holds `database.sqlite-wal` and `-shm` while the app runs;

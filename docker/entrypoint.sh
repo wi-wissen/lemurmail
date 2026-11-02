@@ -4,6 +4,16 @@ set -e
 
 cd /app
 
+# Started as root: create the mounted host folders if Docker made them (as root) or they are missing, give them to
+# the app user, then continue as that user. Started with --user already: skip this.
+if [ "$(id -u)" = "0" ]; then
+    mkdir -p "$(dirname "${DB_DATABASE:-/data/database.sqlite}")" /app/storage
+    for dir in "$(dirname "${DB_DATABASE:-/data/database.sqlite}")" /app/storage; do
+        [ "$(stat -c %u "$dir")" = "$(id -u lemur)" ] || chown -R lemur:lemur "$dir"
+    done
+    exec su-exec lemur "$0" "$@"
+fi
+
 # `docker run IMAGE php artisan ...` (and other one-off commands) run the given command as is.
 if [ "$#" -gt 0 ]; then
     exec "$@"

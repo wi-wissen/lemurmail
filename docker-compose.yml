@@ -1,8 +1,7 @@
 # Production example: one container (FrankenPHP + Laravel), SQLite in a folder on the host.
 #
 # Setup:  1. cp .env.docker.example .env   and edit .env (that is the only file you have to edit)
-#         2. mkdir -p data storage && sudo chown 1000:1000 data storage
-#         3. docker compose up -d
+#         2. docker compose up -d   (the data/ and storage/ folders are created and prepared by the container)
 #
 # The app speaks plain HTTP on 8080 and binds to 127.0.0.1 only. Put a reverse proxy
 # (Caddy, nginx, Traefik, ...) in front that terminates TLS and forwards to 127.0.0.1:8080,
