@@ -34,12 +34,17 @@ class GroupController extends Controller
     {
         $this->owned($request, $group);
 
+        $addresses = $group->addresses()->withCount('messages')->with('senderRules')->orderBy('local_part')->get();
+        $defaultRules = $request->user()->senderRules()->whereNull('address_id')->orderBy('pattern')->get();
+
         return view('teacher.groups.show', [
             'group' => $group,
             'initialTab' => $request->session()->get('errors')?->has('name') ? 'settings' : 'addresses',
             'now' => Clock::now(),
-            'addresses' => $group->addresses()->withCount('messages')->with('senderRules')->orderBy('local_part')->get(),
-            'defaultRules' => $request->user()->senderRules()->whereNull('address_id')->orderBy('pattern')->get(),
+            'addresses' => $addresses,
+            'defaultRules' => $defaultRules,
+            // Addresses that accept no mail at all: no default sender and none of their own.
+            'silentCount' => $defaultRules->isEmpty() ? $addresses->filter(fn ($a) => $a->senderRules->isEmpty())->count() : 0,
         ]);
     }
 

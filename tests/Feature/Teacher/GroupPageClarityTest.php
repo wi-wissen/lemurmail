@@ -84,3 +84,33 @@ it('opens the settings tab when renaming the group failed validation', function 
 
     $this->get(route('groups.show', $g))->assertSee("groupTabs('settings')", false);
 });
+
+it('sends a teacher without any allowed sender to the senders page after login, others to the groups', function () {
+    $t = User::factory()->create();
+    $this->actingAs($t)->get(route('dashboard'))->assertRedirect(route('senders.index'));
+
+    SenderRule::create(['user_id' => $t->id, 'address_id' => null, 'pattern' => '@example-dienst.example']);
+    $this->actingAs($t)->get(route('dashboard'))->assertRedirect(route('groups.index'));
+});
+
+it('warns on the group page when no mail can arrive because no sender is allowed', function () {
+    $t = User::factory()->create();
+    $g = Group::factory()->create(['user_id' => $t->id]);
+
+    $this->actingAs($t)->get(route('groups.show', $g))->assertSee(__('teacher.groups.no_senders_title'));
+
+    $a = Address::factory()->inGroup($g)->create(['local_part' => 'a-01']);
+    Address::factory()->inGroup($g)->create(['local_part' => 'a-02']);
+    $this->actingAs($t)->get(route('groups.show', $g))
+        ->assertSee(trans_choice('teacher.groups.no_senders_silent', 2, ['count' => 2, 'total' => 2]));
+
+    SenderRule::create(['user_id' => $t->id, 'address_id' => $a->id, 'pattern' => 'lms.example']);
+    $this->actingAs($t)->get(route('groups.show', $g))
+        ->assertSee(trans_choice('teacher.groups.no_senders_silent', 1, ['count' => 1, 'total' => 2]));
+});
+
+it('shows no sender warning when a default sender exists', function () {
+    [$t, $g] = clarityGroup();
+
+    $this->actingAs($t)->get(route('groups.show', $g))->assertDontSee(__('teacher.groups.no_senders_title'));
+});

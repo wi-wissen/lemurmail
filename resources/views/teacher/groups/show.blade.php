@@ -7,6 +7,20 @@
             <span class="text-lg text-ink-soft">{{ trans_choice('teacher.groups.address_count', $addresses->count(), ['count' => $addresses->count()]) }}</span>
         </header>
 
+        @if ($defaultRules->isEmpty() && ($addresses->isEmpty() || $silentCount > 0))
+            <x-alert type="warn" :title="__('teacher.groups.no_senders_title')" role="alert">
+                <p>
+                    @if ($addresses->isEmpty())
+                        {{ __('teacher.groups.no_senders_empty') }}
+                    @else
+                        {{ trans_choice('teacher.groups.no_senders_silent', $silentCount, ['count' => $silentCount, 'total' => $addresses->count()]) }}
+                    @endif
+                </p>
+                <button type="button" @click="select('senders')"
+                    class="mt-2 min-h-[44px] font-bold text-accent underline underline-offset-4 hover:text-accent-hover">{{ __('teacher.groups.no_senders_action') }}</button>
+            </x-alert>
+        @endif
+
         @include('teacher.groups._lesson', ['group' => $group])
 
         <div role="tablist" aria-label="{{ __('teacher.groups.tabs_label') }}" class="flex flex-wrap gap-1 border-b border-line">
