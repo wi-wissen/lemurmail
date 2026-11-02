@@ -200,6 +200,7 @@ Variables marked *required* must be set in production. The values in `.env.examp
 | `MAIL_FROM_NAME` | `${APP_NAME}` | Sender name of outgoing mails. |
 | `DB_CONNECTION` | `sqlite` | Database driver. The app is built for SQLite. |
 | `DB_DATABASE` | `database/database.sqlite` (`/data/database.sqlite` in the image) | Path to the SQLite file. |
+| `MAIL_MAILER` | `smtp` | `lettermint` sends system mail over the Lettermint HTTPS API (needs `LETTERMINT_PROJECT_TOKEN`; works when outgoing SMTP ports are blocked). `MAIL_TIMEOUT` (default 10 s) limits SMTP/API waits. |
 | `SESSION_DRIVER` | `database` | Session storage. |
 | `SESSION_LIFETIME` | `120` | Session lifetime in minutes. |
 | `SESSION_SECURE_COOKIE` | unset (`true` in compose) | Send session cookies over HTTPS only. |

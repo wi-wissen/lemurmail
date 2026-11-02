@@ -41,7 +41,13 @@ case "$APP_URL" in
     https://*) : "${SESSION_SECURE_COOKIE:=true}"; export SESSION_SECURE_COOKIE ;;
 esac
 
-[ -n "$MAIL_HOST" ] || echo "WARNING: MAIL_HOST is not set, so verification and approval mails cannot be sent." >&2
+# Logs live next to the database (host volume), so they survive the container.
+mkdir -p "$DB_DIR/logs"
+
+case "${MAIL_MAILER:-smtp}" in
+    lettermint) [ -n "$LETTERMINT_PROJECT_TOKEN" ] || echo "WARNING: LETTERMINT_PROJECT_TOKEN is not set, so verification and approval mails cannot be sent." >&2 ;;
+    smtp) [ -n "$MAIL_HOST" ] || echo "WARNING: MAIL_HOST is not set, so verification and approval mails cannot be sent." >&2 ;;
+esac
 
 if [ ! -f "$DB_DATABASE" ]; then
     touch "$DB_DATABASE"
