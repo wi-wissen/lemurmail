@@ -31,11 +31,11 @@ LABEL org.opencontainers.image.source="${IMAGE_SOURCE}" \
 RUN apk add --no-cache su-exec \
     && install-php-extensions pdo_sqlite intl opcache
 
-# Non-root user. /data (SQLite) and /caddy (Caddy state) are the only writable paths besides storage and bootstrap/cache.
+# Non-root user. /app/storage (host volume: SQLite, app.key, logs) and /caddy (Caddy state) are the only writable paths besides bootstrap/cache.
 RUN addgroup -S -g 1000 lemur \
     && adduser -S -D -H -u 1000 -G lemur lemur \
-    && mkdir -p /data /caddy/config /caddy/data \
-    && chown -R lemur:lemur /data /caddy
+    && mkdir -p /caddy/config /caddy/data \
+    && chown -R lemur:lemur /caddy
 
 ENV APP_ENV=production \
     APP_DEBUG=false \
@@ -46,7 +46,7 @@ ENV APP_ENV=production \
     LOG_STACK=stderr,daily \
     LOG_LEVEL=info \
     DB_CONNECTION=sqlite \
-    DB_DATABASE=/data/database.sqlite \
+    DB_DATABASE=/app/storage/database.sqlite \
     XDG_CONFIG_HOME=/caddy/config \
     XDG_DATA_HOME=/caddy/data
 
@@ -64,7 +64,7 @@ RUN php artisan package:discover --ansi \
 
 # The entrypoint starts as root only to create/chown the mounted folders, then drops to "lemur" (su-exec).
 
-VOLUME ["/data"]
+VOLUME ["/app/storage"]
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \

@@ -7,10 +7,8 @@ cd /app
 # Started as root: create the mounted host folders if Docker made them (as root) or they are missing, give them to
 # the app user, then continue as that user. Started with --user already: skip this.
 if [ "$(id -u)" = "0" ]; then
-    mkdir -p "$(dirname "${DB_DATABASE:-/data/database.sqlite}")" /app/storage
-    for dir in "$(dirname "${DB_DATABASE:-/data/database.sqlite}")" /app/storage; do
-        [ "$(stat -c %u "$dir")" = "$(id -u lemur)" ] || chown -R lemur:lemur "$dir"
-    done
+    mkdir -p /app/storage
+    [ "$(stat -c %u /app/storage)" = "$(id -u lemur)" ] || chown -R lemur:lemur /app/storage
     exec su-exec lemur "$0" "$@"
 fi
 
@@ -24,10 +22,10 @@ fail() {
     exit 1
 }
 
-: "${DB_DATABASE:=/data/database.sqlite}"
+: "${DB_DATABASE:=/app/storage/database.sqlite}"
 DB_DIR="$(dirname "$DB_DATABASE")"
 
-[ -w "$DB_DIR" ] || fail "$DB_DIR is not writable for uid $(id -u). Fix on the host: mkdir -p data && sudo chown $(id -u):$(id -g) data"
+[ -w "$DB_DIR" ] || fail "$DB_DIR is not writable for uid $(id -u). Fix on the host: mkdir -p storage && sudo chown $(id -u):$(id -g) storage"
 
 # Required settings, with a hint where to set them (the .env file next to docker-compose.yml).
 [ -n "$APP_URL" ] || fail "APP_URL is not set (for example https://tmp-mail.example.org). Set it in your .env file."
