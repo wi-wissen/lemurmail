@@ -26,6 +26,7 @@ return [
         'column_mails' => 'Mails',
         'empty' => 'No addresses yet. Create them on the right.',
         'pin_none' => '–',
+        'revoke_pin' => 'Remove PIN',
         'regenerate_pin' => 'New PIN',
         'delete' => 'Delete',
         'create_title' => 'Create addresses',

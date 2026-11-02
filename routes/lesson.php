@@ -11,5 +11,6 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::post('/groups/{group}/lesson/end', [LessonController::class, 'end'])->name('groups.lesson.end');
     Route::post('/groups/{group}/pins', [PinRegenerateController::class, 'group'])->name('groups.pins.regenerate');
     Route::post('/addresses/{address}/pin', [PinRegenerateController::class, 'address'])->name('addresses.pin.regenerate');
+    Route::delete('/addresses/{address}/pin', [PinRegenerateController::class, 'revoke'])->name('addresses.pin.revoke');
     Route::get('/groups/{group}/beamer', [BeamerController::class, 'show'])->name('groups.beamer');
 });

@@ -23,6 +23,7 @@ return [
     'extended' => 'Die Stunde wurde um 15 Minuten verlängert.',
     'ended' => 'Die Stunde ist beendet. Alle PINs sind ungültig.',
     'pins_regenerated' => 'Alle PINs wurden neu erzeugt.',
+    'pin_revoked' => 'Die PIN wurde entfernt.',
     'pin_regenerated' => 'Die PIN wurde neu erzeugt.',
     'no_senders' => 'Ohne mindestens einen erlaubten Absender lässt sich keine Stunde starten.',
     'no_addresses' => 'Ohne mindestens eine Adresse in der Gruppe lässt sich keine Stunde starten.',
