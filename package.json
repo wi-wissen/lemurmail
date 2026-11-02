@@ -25,6 +25,6 @@
     "dependencies": {
         "@fontsource-variable/jetbrains-mono": "^5.3.0",
         "@fontsource/atkinson-hyperlegible": "^5.3.0",
-        "friendly-challenge": "^0.9.20"
+        "altcha": "^3.5.0"
     }
 }

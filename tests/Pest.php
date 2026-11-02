@@ -15,6 +15,7 @@ use Tests\TestCase;
 */
 
 require_once __DIR__.'/Support/WebhookHelpers.php';
+require_once __DIR__.'/Support/CaptchaHelpers.php';
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)

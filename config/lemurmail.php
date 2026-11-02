@@ -29,7 +29,7 @@ return [
     // Validity of a single regenerated PIN when its group has no running lesson.
     'single_pin_seconds' => 45 * 60,
 
-    // PIN brute-force protection. Every login also needs the Friendly Captcha.
+    // PIN brute-force protection. Every login also needs the ALTCHA captcha.
     // Failures are counted per browser session and, as a high circuit breaker, per address. A per-IP limit is
     // OFF by default (0): a whole school often shares one IP and one pupil must not lock out everybody.
     'pin_max_attempts' => 5,            // failures per browser session

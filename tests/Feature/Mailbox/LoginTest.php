@@ -3,7 +3,6 @@
 use App\Models\Address;
 use App\Services\PinIssuer;
 use App\Support\Clock;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
@@ -137,18 +136,17 @@ it('does not count successful logins against the limit', function () {
 });
 
 it('requires the captcha when enabled', function () {
-    config(['friendlycaptcha.enabled' => true, 'friendlycaptcha.secret' => 's', 'friendlycaptcha.sitekey' => 'k']);
+    enableCaptcha();
     Address::factory()->withPin('K7M4QX9R')->create(['local_part' => 'klasse7a-03']);
 
-    loginAs($this, 'klasse7a-03', 'K7M4QX9R')->assertSessionHasErrors('frc-captcha-solution');
+    loginAs($this, 'klasse7a-03', 'K7M4QX9R')->assertSessionHasErrors('altcha');
 
-    Http::fake(['*' => Http::response(['success' => true])]);
-    loginAs($this, 'klasse7a-03', 'K7M4QX9R', ['frc-captcha-solution' => 'abc'])->assertRedirect(route('mailbox.inbox'));
+    loginAs($this, 'klasse7a-03', 'K7M4QX9R', ['altcha' => solvedCaptcha()])->assertRedirect(route('mailbox.inbox'));
 });
 
 it('shows the captcha widget on the login page when enabled', function () {
-    config(['friendlycaptcha.enabled' => true, 'friendlycaptcha.sitekey' => 'SITEKEY123']);
-    $this->get('/')->assertSee('frc-captcha', false)->assertSee('SITEKEY123', false);
+    enableCaptcha();
+    $this->get('/')->assertSee('<altcha-widget', false);
 });
 
 it('ends the session when the PIN expires', function () {
