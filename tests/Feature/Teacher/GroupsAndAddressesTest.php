@@ -188,7 +188,7 @@ it('exports the live PINs of a group as CSV and a print view', function () {
     Address::factory()->inGroup($g)->create(['local_part' => 'klasse7a-01']);
 
     $csv = $this->actingAs($t)->get(route('groups.pins.csv', $g))->assertOk()->assertHeader('content-type', 'text/csv; charset=UTF-8');
-    expect($csv->streamedContent())->toContain('address,pin,valid_until')->toContain('klasse7a-02@tmp-mail.example.org,T3WD8HNP')->not->toContain('klasse7a-01');
+    expect($csv->streamedContent())->toContain('address,pin,valid_until')->toContain('klasse7a-02@tmp-mail.example.org,T3WD8HNP')->toContain("klasse7a-01@tmp-mail.example.org,,\n");
     $this->get(route('groups.print', $g))->assertOk()->assertSee('klasse7a-02')->assertSee('T3WD 8HNP');
     $this->get(route('groups.pins.csv', Group::factory()->create()))->assertNotFound();
 });
