@@ -218,3 +218,17 @@ it('shows a name placeholder with the mail domain so pupils do not copy a sample
     expect($html)->toContain(e('<name>'))->toContain('@<span')->toContain('tmp-mail.example.org')
         ->and($html)->toContain('x-show="lastMinute"');
 });
+
+it('takes back a single PIN, which then no longer works and is gone from the list', function () {
+    [$t, $g] = lessonSetup(2);
+    $this->actingAs($t)->post(route('groups.lesson.start', $g), ['mode' => 'minutes', 'minutes' => 45]);
+    [$a, $b] = Address::where('group_id', $g->id)->get()->all();
+
+    $this->delete(route('addresses.pin.revoke', $a))->assertRedirect();
+
+    expect($a->fresh()->pinIsValid(Clock::now()))->toBeFalse()->and($a->fresh()->pin_encrypted)->toBeNull();
+    expect($b->fresh()->pinIsValid(Clock::now()))->toBeTrue();
+    // Only the address that still has a PIN offers the trash button.
+    expect(substr_count($this->get(route('groups.show', $g))->getContent(), 'aria-label="'.__('teacher.addresses.revoke_pin').'"'))->toBe(1);
+    $this->delete(route('addresses.pin.revoke', Address::factory()->create()))->assertNotFound();
+});

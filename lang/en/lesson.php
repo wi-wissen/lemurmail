@@ -23,6 +23,7 @@ return [
     'extended' => 'The lesson was extended by 15 minutes.',
     'ended' => 'The lesson has ended. All PINs are invalid.',
     'pins_regenerated' => 'All PINs were regenerated.',
+    'pin_revoked' => 'The PIN was removed.',
     'pin_regenerated' => 'The PIN was regenerated.',
     'no_senders' => 'A lesson cannot start without at least one allowed sender.',
     'no_addresses' => 'A lesson cannot start without at least one address in the group.',

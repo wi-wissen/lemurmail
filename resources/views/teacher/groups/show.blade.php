@@ -93,7 +93,21 @@
                             <tbody class="border-t border-line align-top" x-data="{ open: @js($errors->getBag('address_sender')->any() && (int) old('row') === $address->id) }">
                                 <tr>
                                     <td class="px-6 py-3 font-mono">{{ $address->local_part }}</td>
-                                    <td class="px-3 py-3 font-mono tracking-wider">{{ $pin ?? __('teacher.addresses.pin_none') }}</td>
+                                    <td class="px-3 py-3 font-mono tracking-wider">
+                                        <span class="inline-flex items-center gap-2">
+                                            {{ $pin ?? __('teacher.addresses.pin_none') }}
+                                            @if ($pin !== null && Route::has('addresses.pin.revoke'))
+                                                <form method="POST" action="{{ route('addresses.pin.revoke', $address) }}" class="inline-flex">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" title="{{ __('teacher.addresses.revoke_pin') }}" aria-label="{{ __('teacher.addresses.revoke_pin') }}"
+                                                        class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-ink-soft hover:bg-danger-soft hover:text-danger focus-visible:bg-danger-soft focus-visible:text-danger">
+                                                        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9h6.6L12 4M6.8 6.5v4.2M9.2 6.5v4.2"/></svg>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </span>
+                                    </td>
                                     <td class="px-3 py-3">{{ $address->messages_count }}</td>
                                     <td class="px-6 py-3">
                                         <div class="flex flex-wrap justify-end gap-2">
