@@ -10,14 +10,25 @@ const MB_DOMAIN = 'tmp-mail.example.org';
 
 function loginAs($test, string $address, string $pin, array $extra = [])
 {
-    return $test->from('/')->post(route('mailbox.login'), ['address' => $address, 'pin' => $pin] + $extra);
+    return $test->from('/mailbox/login')->post(route('mailbox.login'), ['address' => $address, 'pin' => $pin] + $extra);
 }
 
 beforeEach(fn () => RateLimiter::clear('x'));
 
-it('shows the login page on the home route', function () {
-    $this->get('/')->assertOk()->assertSee(__('mailbox.login_title'));
-    expect(route('home', absolute: false))->toBe('/');
+it('shows the login page on its own route, with a link to the teacher login', function () {
+    expect(route('mailbox.login.form', absolute: false))->toBe('/mailbox/login');
+    $this->get(route('mailbox.login.form'))->assertOk()
+        ->assertSee(__('mailbox.login_title'))
+        ->assertSee(__('common.role_student'))
+        ->assertSee(route('login'), false);
+});
+
+it('sends a student who is still signed in from the login page to the inbox', function () {
+    Address::factory()->withPin('K7M4QX9R')->create(['local_part' => 'klasse7a-03']);
+    loginAs($this, 'klasse7a-03', 'K7M4QX9R');
+
+    $this->get(route('mailbox.login.form'))->assertRedirect(route('mailbox.inbox'));
+    $this->get(route('home'))->assertRedirect(route('mailbox.inbox'));
 });
 
 it('logs in with address and PIN, with or without domain, any case and spacing', function (string $addr, string $pin) {
@@ -45,7 +56,7 @@ it('gives the identical error for unknown address, wrong PIN, expired PIN and fo
         ['klasse7a-03@evil.example', 'K7M4QX9R'],
     ])->map(function ($c) {
         $r = loginAs($this, ...$c);
-        $r->assertRedirect('/')->assertSessionHasErrors('address');
+        $r->assertRedirect('/mailbox/login')->assertSessionHasErrors('address');
         $this->assertGuest();
 
         return session('errors')->first('address');
@@ -70,7 +81,7 @@ it('blocks a browser session after 5 failures, even for the right PIN, without r
     loginAs($this, $local, 'K7M4QX9R')->assertSessionHasErrors('address');
 
     expect(session('errors')->first('address'))->toBe(__('mailbox.too_many_attempts'));
-    $this->get(route('mailbox.inbox'))->assertRedirect(route('home'));
+    $this->get(route('mailbox.inbox'))->assertRedirect(route('mailbox.login.form'));
 })->with(['klasse7a-03', 'does-not-exist']);
 
 it('does not let one browser session block the other students on the same network', function () {
@@ -146,7 +157,7 @@ it('requires the captcha when enabled', function () {
 
 it('shows the captcha widget on the login page when enabled', function () {
     enableCaptcha();
-    $this->get('/')->assertSee('<altcha-widget', false);
+    $this->get(route('mailbox.login.form'))->assertSee('<altcha-widget', false);
 });
 
 it('ends the session when the PIN expires', function () {
@@ -156,7 +167,7 @@ it('ends the session when the PIN expires', function () {
 
     $this->travel(11)->minutes();
 
-    $this->get(route('mailbox.inbox'))->assertRedirect(route('home'));
+    $this->get(route('mailbox.inbox'))->assertRedirect(route('mailbox.login.form'));
     $this->getJson(route('mailbox.messages'))->assertStatus(401);
 });
 
@@ -165,7 +176,7 @@ it('ends the session when the PIN is replaced', function () {
     loginAs($this, 'klasse7a-03', 'K7M4QX9R');
     app(PinIssuer::class)->issue($address, Clock::now() + 3600);
 
-    $this->get(route('mailbox.inbox'))->assertRedirect(route('home'));
+    $this->get(route('mailbox.inbox'))->assertRedirect(route('mailbox.login.form'));
 });
 
 it('ends the session when the lesson is ended', function () {
@@ -173,14 +184,14 @@ it('ends the session when the lesson is ended', function () {
     loginAs($this, 'klasse7a-03', 'K7M4QX9R');
     app(PinIssuer::class)->revoke($address, Clock::now());
 
-    $this->get(route('mailbox.inbox'))->assertRedirect(route('home'));
+    $this->get(route('mailbox.inbox'))->assertRedirect(route('mailbox.login.form'));
 });
 
 it('logs out', function () {
     Address::factory()->withPin('K7M4QX9R')->create(['local_part' => 'klasse7a-03']);
     loginAs($this, 'klasse7a-03', 'K7M4QX9R');
-    $this->post(route('mailbox.logout'))->assertRedirect(route('home'));
-    $this->get(route('mailbox.inbox'))->assertRedirect(route('home'));
+    $this->post(route('mailbox.logout'))->assertRedirect(route('mailbox.login.form'));
+    $this->get(route('mailbox.inbox'))->assertRedirect(route('mailbox.login.form'));
 });
 
 it('redirects a logged-in student from home to the inbox', function () {

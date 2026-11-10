@@ -50,7 +50,7 @@ it('gives every form on the admin pages a submit button', function () {
 });
 
 it('gives every form on the public and student pages a submit button', function () {
-    assertEveryFormCanSubmit($this->get(route('home'))->getContent());
+    assertEveryFormCanSubmit($this->get(route('mailbox.login.form'))->getContent());
     assertEveryFormCanSubmit($this->get(route('login'))->getContent());
     assertEveryFormCanSubmit($this->get(route('register'))->getContent());
     assertEveryFormCanSubmit($this->get(route('password.request'))->getContent());

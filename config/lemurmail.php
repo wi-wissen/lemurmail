@@ -37,6 +37,9 @@ return [
     'pin_ip_max_attempts' => (int) env('PIN_IP_MAX_ATTEMPTS', 0), // 0 = no IP limit
     'pin_decay_seconds' => 15 * 60,
 
+    // Page with more information about Lemur Mail, linked from the start page. Empty hides the link.
+    'about_url' => env('ABOUT_URL', 'https://lemurmail.wi7.net/'),
+
     // Legal pages of the operator (full URLs). The footer links only appear when set.
     'imprint_url' => env('IMPRINT_URL'),
     'privacy_url' => env('PRIVACY_URL'),

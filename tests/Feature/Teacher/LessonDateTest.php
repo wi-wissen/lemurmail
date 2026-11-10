@@ -85,7 +85,7 @@ it('lets students stay signed in for days and ends the access on the end date', 
     $this->get(route('mailbox.inbox'))->assertOk();
 
     $this->travelTo(Carbon::parse('2026-10-20 00:00:01', 'Europe/Berlin'));
-    $this->get(route('mailbox.inbox'))->assertRedirect(route('home'));
+    $this->get(route('mailbox.inbox'))->assertRedirect(route('mailbox.login.form'));
 });
 
 it('shows the end date on the group page, the beamer and the student inbox', function () {

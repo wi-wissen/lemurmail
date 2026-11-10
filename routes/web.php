@@ -13,7 +13,7 @@ Route::get('/lang/{locale}', LocaleController::class)->name('locale');
 Route::get('/captcha/challenge', CaptchaController::class)->middleware('throttle:60,1')->name('captcha.challenge');
 
 // Each area owns its route file.
-require __DIR__.'/mailbox.php';   // students: "/" (name: home), inbox, secret
+require __DIR__.'/mailbox.php';   // start page "/" (name: home), student login, inbox, secret
 require __DIR__.'/auth.php';      // teachers: login, registration, verification, account status, profile
 require __DIR__.'/teacher.php';   // groups, addresses, senders, CSV/print
 require __DIR__.'/lesson.php';    // lesson control, PIN regeneration, beamer

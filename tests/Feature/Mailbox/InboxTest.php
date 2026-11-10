@@ -14,11 +14,11 @@ function signedIn($test, string $local = 'klasse7a-03', string $pin = 'K7M4QX9R'
 
 it('requires a session for every mailbox endpoint', function () {
     $m = Message::factory()->create();
-    $this->get(route('mailbox.inbox'))->assertRedirect(route('home'));
+    $this->get(route('mailbox.inbox'))->assertRedirect(route('mailbox.login.form'));
     $this->getJson(route('mailbox.messages'))->assertStatus(401);
     $this->getJson(route('mailbox.messages.show', $m))->assertStatus(401);
     $this->deleteJson(route('mailbox.messages.destroy', $m))->assertStatus(401);
-    $this->get(route('mailbox.secret.edit'))->assertRedirect(route('home'));
+    $this->get(route('mailbox.secret.edit'))->assertRedirect(route('mailbox.login.form'));
     $this->getJson(route('mailbox.secret.show'))->assertStatus(401);
 });
 

@@ -175,6 +175,7 @@ Variables marked *required* must be set in production. The values in `.env.examp
 | `MAIL_DOMAIN` | `tmp-mail.example.org` (*required*) | Domain of the temporary addresses (the app's own subdomain). |
 | `LETTERMINT_WEBHOOK_SECRET` | – (*required*) | Signing secret of the Lettermint inbound webhook. |
 | `ADMIN_EMAIL` | – | Receives "new teacher waiting for approval" mails. |
+| `ABOUT_URL` | `https://lemurmail.wi7.net/` | Page with more information about Lemur Mail, linked from the start page. Empty hides the link. |
 | `IMPRINT_URL` | – | Full URL of the operator's imprint. The footer link only appears when set. |
 | `PRIVACY_URL` | – | Full URL of the operator's privacy policy. The footer link only appears when set. |
 | `INBOUND_AUTH_MODE` | `aligned` | Sender authentication of whitelisted mail: `aligned` (DMARC, or DKIM/SPF aligned with the From domain), `authenticated` (any SPF/DKIM/DMARC pass) or `off` (whitelist only). Relax it if mail of a legitimate service is rejected. |
