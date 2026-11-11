@@ -16,7 +16,7 @@ return [
 
     'how_title' => 'So funktioniert es',
     'step1_title' => 'Lehrer:in legt Adressen an',
-    'step1_text' => 'zum Beispiel klasse7a-01 bis klasse7a-30.',
+    'step1_text' => 'z. B. klasse7a-01 bis -30.',
     'step2_title' => 'Die Stunde startet',
     'step2_text' => 'Adressen und PINs stehen am Beamer.',
     'step3_title' => 'Schüler:innen lesen Mails',
