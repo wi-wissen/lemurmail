@@ -16,7 +16,7 @@ return [
 
     'how_title' => 'How it works',
     'step1_title' => 'The teacher creates addresses',
-    'step1_text' => 'for example klasse7a-01 to klasse7a-30.',
+    'step1_text' => 'e.g. klasse7a-01 to -30.',
     'step2_title' => 'The lesson starts',
     'step2_text' => 'addresses and PINs are shown on the projector.',
     'step3_title' => 'Students read their mails',
