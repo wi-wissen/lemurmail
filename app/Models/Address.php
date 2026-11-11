@@ -54,6 +54,15 @@ class Address extends Model
         return $this->pin_hash !== null && $this->pin_expires_at !== null && $this->pin_expires_at > $now;
     }
 
+    /**
+     * A PIN issued for this address alone: still valid, but not ending with the lesson of its group
+     * ($lessonEndsAt). Lesson actions (start, regenerate all, extend, end) leave such a PIN alone.
+     */
+    public function hasOwnPin(?int $lessonEndsAt, int $now): bool
+    {
+        return $this->pinIsValid($now) && $this->pin_expires_at !== $lessonEndsAt;
+    }
+
     /** Fingerprint stored in student sessions; changes whenever the PIN changes. */
     public function pinFingerprint(): string
     {

@@ -27,6 +27,7 @@ return [
         'empty' => 'Noch keine Adressen. Lege sie rechts an.',
         'pin_none' => '–',
         'revoke_pin' => 'PIN entfernen',
+        'own_pin' => 'Eigene PIN · gültig bis :until',
         'regenerate_pin' => 'Neue PIN',
         'delete' => 'Löschen',
         'create_title' => 'Adressen anlegen',
