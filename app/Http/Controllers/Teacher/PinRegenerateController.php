@@ -9,6 +9,7 @@ use App\Models\Group;
 use App\Services\LessonService;
 use App\Services\PinIssuer;
 use App\Support\Clock;
+use App\Support\TimeLabel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -29,9 +30,11 @@ class PinRegenerateController extends Controller
     public function address(Request $request, Address $address): RedirectResponse
     {
         $this->owned($request, $address);
-        $this->lessons->regenerateAddressPin($address, Clock::now());
+        $now = Clock::now();
+        $this->lessons->regenerateAddressPin($address, $now);
 
-        return redirect()->back(fallback: route('groups.index'))->with('status', __('lesson.pin_regenerated'));
+        return redirect()->back(fallback: route('groups.index'))
+            ->with('status', __('lesson.pin_regenerated', ['until' => TimeLabel::until($address->pin_expires_at, $now)]));
     }
 
     /** Takes back the PIN of one address: nobody can sign in with it any more and it disappears from the lists. */

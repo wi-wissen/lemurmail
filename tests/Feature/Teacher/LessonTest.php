@@ -5,6 +5,7 @@ use App\Models\Group;
 use App\Models\SenderRule;
 use App\Models\User;
 use App\Support\Clock;
+use App\Support\TimeLabel;
 use Illuminate\Support\Carbon;
 
 function lessonSetup(int $addresses = 3, bool $sender = true): array
@@ -144,19 +145,23 @@ it('refuses to regenerate all PINs without a running lesson', function () {
     $this->actingAs($t)->post(route('groups.pins.regenerate', $g))->assertSessionHasErrors('lesson');
 });
 
-it('regenerates a single PIN: lesson expiry if running, else the standalone validity', function () {
+it('gives a single address its own PIN for the PIN maximum, with or without a running lesson', function () {
     [$t, $g] = lessonSetup(2);
     $a = Address::where('group_id', $g->id)->first();
     $b = Address::where('group_id', $g->id)->latest('id')->first();
     $now = Clock::now();
+    $max = config('lemurmail.max_pin_seconds');
 
-    $this->actingAs($t)->post(route('addresses.pin.regenerate', $a))->assertRedirect();
-    expect($a->fresh()->pin_expires_at)->toBeBetween($now + 2700, $now + 2705);
+    $this->actingAs($t)->post(route('addresses.pin.regenerate', $a))->assertRedirect()
+        ->assertSessionHas('status', __('lesson.pin_regenerated', ['until' => TimeLabel::until($a->fresh()->pin_expires_at, Clock::now())]));
+    expect($a->fresh()->pin_expires_at)->toBeBetween($now + $max, $now + $max + 5);
 
     $this->post(route('groups.lesson.start', $g), ['mode' => 'minutes', 'minutes' => 90]);
     $old = $b->fresh()->pin_encrypted;
     $this->post(route('addresses.pin.regenerate', $b))->assertRedirect();
-    expect($b->fresh()->pin_encrypted)->not->toBe($old)->and($b->fresh()->pin_expires_at)->toBe($g->fresh()->lesson_ends_at);
+    expect($b->fresh()->pin_encrypted)->not->toBe($old)
+        ->and($b->fresh()->pin_expires_at)->toBeBetween($now + $max, $now + $max + 5)
+        ->and($b->fresh()->hasOwnPin($g->fresh()->lesson_ends_at, Clock::now()))->toBeTrue();
 
     $this->post(route('addresses.pin.regenerate', Address::factory()->create()))->assertNotFound();
 });
@@ -231,4 +236,75 @@ it('takes back a single PIN, which then no longer works and is gone from the lis
     // Only the address that still has a PIN offers the trash button.
     expect(substr_count($this->get(route('groups.show', $g))->getContent(), 'aria-label="'.__('teacher.addresses.revoke_pin').'"'))->toBe(1);
     $this->delete(route('addresses.pin.revoke', Address::factory()->create()))->assertNotFound();
+});
+
+/** Starts a 45 min lesson, then gives the first address of the group its own PIN. Returns [teacher, group, own, other]. */
+function ownPinSetup($test): array
+{
+    [$t, $g] = lessonSetup(2);
+    $test->actingAs($t)->post(route('groups.lesson.start', $g), ['mode' => 'minutes', 'minutes' => 45]);
+    $own = Address::where('group_id', $g->id)->first();
+    $other = Address::where('group_id', $g->id)->latest('id')->first();
+    $test->post(route('addresses.pin.regenerate', $own));
+
+    return [$t, $g, $own->fresh(), $other->fresh()];
+}
+
+it('keeps an own PIN when the lesson is started again, all PINs are regenerated or the lesson is extended', function () {
+    [, $g, $own, $other] = ownPinSetup($this);
+
+    $this->post(route('groups.lesson.start', $g), ['mode' => 'minutes', 'minutes' => 90]);
+    $this->post(route('groups.pins.regenerate', $g));
+    $this->post(route('groups.lesson.extend', $g));
+
+    expect($own->fresh()->pin_encrypted)->toBe($own->pin_encrypted)
+        ->and($own->fresh()->pin_expires_at)->toBe($own->pin_expires_at)
+        ->and($other->fresh()->pin_encrypted)->not->toBe($other->pin_encrypted)
+        ->and($other->fresh()->pin_expires_at)->toBe($g->fresh()->lesson_ends_at);
+});
+
+it('keeps an own PIN valid when the lesson ends, the other PINs end', function () {
+    [, $g, $own, $other] = ownPinSetup($this);
+
+    $this->post(route('groups.lesson.end', $g));
+    $now = Clock::now();
+
+    expect($own->fresh()->pinIsValid($now))->toBeTrue()->and($own->fresh()->pin_encrypted)->toBe($own->pin_encrypted)
+        ->and($other->fresh()->pinIsValid($now))->toBeFalse();
+
+    auth()->logout();
+    $this->post(route('mailbox.login'), ['address' => $own->local_part, 'pin' => $own->pin_encrypted])->assertRedirect(route('mailbox.inbox'));
+});
+
+it('hands the address back to the group when its own PIN is removed', function () {
+    [, $g, $own] = ownPinSetup($this);
+
+    $this->delete(route('addresses.pin.revoke', $own));
+    $this->post(route('groups.lesson.start', $g), ['mode' => 'minutes', 'minutes' => 45]);
+
+    expect($own->fresh()->pin_encrypted)->not->toBe($own->pin_encrypted)
+        ->and($own->fresh()->pin_expires_at)->toBe($g->fresh()->lesson_ends_at);
+});
+
+it('renews long lesson PINs when a new lesson starts', function () {
+    [$t, $g] = lessonSetup(2);
+    $this->actingAs($t)->post(route('groups.lesson.start', $g), ['mode' => 'date', 'until_date' => date('Y-m-d', Clock::now() + 30 * 86400)])->assertSessionHasNoErrors();
+    $before = Address::where('group_id', $g->id)->pluck('pin_encrypted', 'id');
+
+    $this->post(route('groups.lesson.start', $g), ['mode' => 'minutes', 'minutes' => 45]);
+
+    Address::where('group_id', $g->id)->get()->each(function ($a) use ($before, $g) {
+        expect($a->pin_encrypted)->not->toBe($before[$a->id])->and($a->pin_expires_at)->toBe($g->fresh()->lesson_ends_at);
+    });
+});
+
+it('marks an own PIN only in the address list, the beamer shows it like any other', function () {
+    [, $g, $own] = ownPinSetup($this);
+    $marker = __('teacher.addresses.own_pin', ['until' => '']);
+    $marker = trim(explode('·', $marker)[0]);
+
+    $this->get(route('groups.show', $g))->assertOk()->assertSeeText($marker);
+    $this->get(route('groups.beamer', $g))->assertOk()
+        ->assertSee(substr($own->pin_encrypted, 0, 4).' '.substr($own->pin_encrypted, 4))
+        ->assertDontSeeText($marker);
 });

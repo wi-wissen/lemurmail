@@ -24,7 +24,7 @@ return [
     'ended' => 'The lesson has ended. All PINs are invalid.',
     'pins_regenerated' => 'All PINs were regenerated.',
     'pin_revoked' => 'The PIN was removed.',
-    'pin_regenerated' => 'The PIN was regenerated.',
+    'pin_regenerated' => 'The address now has its own PIN, valid until :until. Lessons of the group do not change it; the bin removes it.',
     'no_senders' => 'A lesson cannot start without at least one allowed sender.',
     'no_addresses' => 'A lesson cannot start without at least one address in the group.',
     'not_running' => 'No lesson is running right now.',

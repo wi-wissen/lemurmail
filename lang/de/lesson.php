@@ -24,7 +24,7 @@ return [
     'ended' => 'Die Stunde ist beendet. Alle PINs sind ungültig.',
     'pins_regenerated' => 'Alle PINs wurden neu erzeugt.',
     'pin_revoked' => 'Die PIN wurde entfernt.',
-    'pin_regenerated' => 'Die PIN wurde neu erzeugt.',
+    'pin_regenerated' => 'Die Adresse hat jetzt eine eigene PIN, gültig bis :until. Stunden der Gruppe ändern sie nicht, mit dem Papierkorb entfernst du sie.',
     'no_senders' => 'Ohne mindestens einen erlaubten Absender lässt sich keine Stunde starten.',
     'no_addresses' => 'Ohne mindestens eine Adresse in der Gruppe lässt sich keine Stunde starten.',
     'not_running' => 'Es läuft gerade keine Stunde.',

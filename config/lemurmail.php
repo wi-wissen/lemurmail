@@ -23,11 +23,9 @@ return [
     'max_lesson_seconds' => (int) env('MAX_LESSON_MINUTES', 720) * 60,
     'extend_seconds' => 15 * 60,
 
-    // Longest validity when a lesson/PINs are started with an end DATE (there is deliberately no unlimited option).
+    // Longest validity when a lesson/PINs are started with an end DATE, and the validity of a PIN issued for a
+    // single address ("own PIN"). There is deliberately no unlimited option.
     'max_pin_seconds' => (int) env('MAX_PIN_DAYS', 365) * 86400,
-
-    // Validity of a single regenerated PIN when its group has no running lesson.
-    'single_pin_seconds' => 45 * 60,
 
     // PIN brute-force protection. Every login also needs the ALTCHA captcha.
     // Failures are counted per browser session and, as a high circuit breaker, per address. A per-IP limit is

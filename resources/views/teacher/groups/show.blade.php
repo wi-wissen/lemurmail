@@ -107,6 +107,11 @@
                                                 </form>
                                             @endif
                                         </span>
+                                        @if ($pin !== null && $address->hasOwnPin($group->lesson_ends_at, $now))
+                                            <span class="mt-1 block font-sans text-[14px] tracking-normal text-ink-soft">
+                                                <span class="rounded-full bg-accent-soft px-2 py-0.5 font-bold text-accent-hover">{{ __('teacher.addresses.own_pin', ['until' => \App\Support\TimeLabel::until($address->pin_expires_at, $now)]) }}</span>
+                                            </span>
+                                        @endif
                                     </td>
                                     <td class="px-3 py-3">{{ $address->messages_count }}</td>
                                     <td class="px-6 py-3">

@@ -180,7 +180,7 @@ Variables marked *required* must be set in production. The values in `.env.examp
 | `PRIVACY_URL` | – | Full URL of the operator's privacy policy. The footer link only appears when set. |
 | `INBOUND_AUTH_MODE` | `aligned` | Sender authentication of whitelisted mail: `aligned` (DMARC, or DKIM/SPF aligned with the From domain), `authenticated` (any SPF/DKIM/DMARC pass) or `off` (whitelist only). Relax it if mail of a legitimate service is rejected. |
 | `PIN_IP_MAX_ATTEMPTS` | `0` | Failed PIN logins per IP in 15 minutes. `0` disables the IP limit (recommended: a whole school shares one IP). Logins are limited per browser session (5) and per address (50) and need the captcha. |
-| `MAX_PIN_DAYS` | `365` | Longest PIN validity when a teacher starts a lesson with an end date. |
+| `MAX_PIN_DAYS` | `365` | Longest PIN validity when a teacher starts a lesson with an end date, and the validity of a PIN issued for a single address (own PIN). |
 | `MAIL_RETENTION_DAYS` | `7` | Retention of stored mails in days. Hard-capped at 7. |
 | `DEFAULT_ADDRESS_LIMIT` | `200` | Default cap of addresses per teacher. |
 | `MAX_LESSON_MINUTES` | `720` | Longest allowed lesson or PIN validity in minutes. |

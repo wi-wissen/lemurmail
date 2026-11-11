@@ -13,14 +13,20 @@ class LessonService
 {
     public function __construct(private readonly PinIssuer $pins) {}
 
-    /** Starts (or restarts) a lesson: every address of the group gets a fresh PIN valid until the window ends. */
+    /**
+     * Starts (or restarts) a lesson: every address of the group gets a fresh PIN valid until the window ends,
+     * except addresses with their own PIN (see Address::hasOwnPin()).
+     */
     public function start(Group $group, HourWindow $window): void
     {
         DB::transaction(function () use ($group, $window) {
+            $previousEnd = $group->lesson_ends_at;
             $group->update(['lesson_started_at' => $window->startedAt, 'lesson_ends_at' => $window->endsAt]);
 
             foreach ($group->addresses as $address) {
-                $this->pins->issue($address, $window->endsAt);
+                if (! $address->hasOwnPin($previousEnd, $window->startedAt)) {
+                    $this->pins->issue($address, $window->endsAt);
+                }
             }
         });
     }
@@ -30,21 +36,22 @@ class LessonService
         $running = $this->runningWindow($group, $now);
         $window = $running->extend($now, config('lemurmail.extend_seconds'), $this->extendCap($running));
 
-        DB::transaction(function () use ($group, $window, $now) {
+        DB::transaction(function () use ($group, $running, $window, $now) {
             $group->update(['lesson_ends_at' => $window->endsAt]);
 
             foreach ($group->addresses as $address) {
-                if ($address->pinIsValid($now)) {
+                if ($address->pinIsValid($now) && ! $address->hasOwnPin($running->endsAt, $now)) {
                     $this->pins->setExpiry($address, $window->endsAt);
                 }
             }
         });
     }
 
-    /** Ends the lesson at once: all PINs of the group become invalid and their plaintext is dropped. */
+    /** Ends the lesson at once: the PINs of the lesson become invalid and their plaintext is dropped. Own PINs stay. */
     public function end(Group $group, int $now): void
     {
         DB::transaction(function () use ($group, $now) {
+            $previousEnd = $group->lesson_ends_at;
             $window = $group->window()?->end($now);
 
             if ($window !== null) {
@@ -52,7 +59,9 @@ class LessonService
             }
 
             foreach ($group->addresses as $address) {
-                $this->pins->revoke($address, $now);
+                if (! $address->hasOwnPin($previousEnd, $now)) {
+                    $this->pins->revoke($address, $now);
+                }
             }
         });
     }
@@ -61,22 +70,22 @@ class LessonService
     {
         $window = $this->runningWindow($group, $now);
 
-        DB::transaction(function () use ($group, $window) {
+        DB::transaction(function () use ($group, $window, $now) {
             foreach ($group->addresses as $address) {
-                $this->pins->issue($address, $window->endsAt);
+                if (! $address->hasOwnPin($window->endsAt, $now)) {
+                    $this->pins->issue($address, $window->endsAt);
+                }
             }
         });
     }
 
-    /** Valid until the running lesson ends, otherwise for the standalone validity. */
+    /**
+     * Gives one address its own PIN, independent of the lessons of its group: valid for the PIN maximum
+     * (MAX_PIN_DAYS) or until the teacher removes it. Removing it hands the address back to the group.
+     */
     public function regenerateAddressPin(Address $address, int $now): void
     {
-        $window = $address->group?->window();
-        $expiresAt = $window?->isActive($now)
-            ? $window->endsAt
-            : $now + config('lemurmail.single_pin_seconds');
-
-        $this->pins->issue($address, $expiresAt);
+        $this->pins->issue($address, $now + config('lemurmail.max_pin_seconds'));
     }
 
     /** Lessons ended by a date may run for the PIN maximum, duration based ones only for the lesson maximum. */
