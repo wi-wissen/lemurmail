@@ -2,7 +2,7 @@
 
 return [
     'title' => 'Was möchtest du tun?',
-    'lead' => 'Lemur Mail ist ein Postfach, das nur empfangen kann. Lehrkräfte legen Adressen für ihre Klasse an, Schüler:innen lesen dort Bestätigungs- und Passwort-Mails.',
+    'lead' => 'Lemur Mail ist ein Postfach, das nur empfangen kann. Lehrer:innen legen Adressen für ihre Klasse an, Schüler:innen lesen dort Bestätigungs- und Passwort-Mails.',
     'about' => 'Mehr über Lemur Mail',
 
     'student_title' => 'Mails abrufen',
@@ -15,7 +15,7 @@ return [
     'teacher_register' => 'Registrieren',
 
     'how_title' => 'So funktioniert es',
-    'step1_title' => 'Lehrkraft legt Adressen an',
+    'step1_title' => 'Lehrer:in legt Adressen an',
     'step1_text' => 'zum Beispiel klasse7a-01 bis klasse7a-30.',
     'step2_title' => 'Die Stunde startet',
     'step2_text' => 'Adressen und PINs stehen am Beamer.',

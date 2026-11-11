@@ -6,6 +6,7 @@ address + PIN and read confirmation / password-reset mails. Nothing can be sent.
 ## Language rules
 - Chat with the owner in German. Code, comments, README and commit messages in English.
 - All UI text goes through i18n: `lang/de/*.php` and `lang/en/*.php` (German first, every key in both). No hard-coded UI strings in Blade/JS.
+- German wording: always write **Lehrer:in / Lehrer:innen** and **Schüler:in / Schüler:innen** (gender colon). Never "Lehrkraft", "Lehrkräfte", "Lehrer" or "Schüler" alone. This applies to UI texts, mails, docs, mockups and chat. The owner asked for this explicitly.
 - JS gets its strings from the server (data attributes / `@json(__(...))`), never from its own tables.
 
 ## Hard rules
