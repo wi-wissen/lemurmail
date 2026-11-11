@@ -7,6 +7,7 @@ use App\Http\Controllers\Mailbox\SecretController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/mailbox/login', [LoginController::class, 'create'])->name('mailbox.login.form');
 Route::post('/mailbox/login', [LoginController::class, 'store'])->name('mailbox.login');
 Route::post('/mailbox/logout', [LoginController::class, 'destroy'])->name('mailbox.logout');
 

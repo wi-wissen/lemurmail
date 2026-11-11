@@ -5,7 +5,7 @@
     $countdown = [
         'expiresAt' => $address->pin_expires_at,
         'serverNow' => $now,
-        'homeUrl' => route('home'),
+        'homeUrl' => route('mailbox.login.form'),
         'template' => __('mailbox.pin_valid_until', ['time' => $validUntil, 'minutes' => ':minutes']),
         'daysOne' => __('mailbox.pin_valid_until_days_one', ['time' => $validUntil, 'count' => ':count']),
         'daysOther' => __('mailbox.pin_valid_until_days_other', ['time' => $validUntil, 'count' => ':count']),
@@ -36,7 +36,7 @@
         'inbox' => [
             'messagesUrl' => route('mailbox.messages'),
             'secretUrl' => route('mailbox.secret.show'),
-            'homeUrl' => route('home'),
+            'homeUrl' => route('mailbox.login.form'),
         ],
         'secretEditUrl' => route('mailbox.secret.edit'),
     ])

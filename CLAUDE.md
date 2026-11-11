@@ -31,6 +31,7 @@ address + PIN and read confirmation / password-reset mails. Nothing can be sent.
 - Webhook signature: `X-Lettermint-Signature: t=<unix>,v1=<hex hmac-sha256 of "<t>.<raw body>">`, 300 s tolerance.
 - Locale: `App\Http\Middleware\SetLocale` (session choice, then Accept-Language, supported `de`,`en`, fallback `de`).
 - Deleting a group deletes its addresses and their mails. Approved teacher-registration domains may carry a regex for the part before the `@` (whole-match). Teacher login needs the captcha too.
+- Start page `/` only explains the app and offers two ways (students → `/mailbox/login`, teachers → login/register); it has no form. Every sign-in page (mailbox login and the teacher auth pages) uses the guest layout plus `<x-auth-card role=… switch=…>`: same header, same 440 px card, a role badge and a link to the other login.
 - UI: the group page uses tabs (addresses / allowed senders / settings); the secret sits in a bar above the mails; the beamer shows `<name>@domain` large and a countdown only in the last minute.
 - Retention: mails older than min(configured days, 7) are pruned hourly.
 

@@ -7,16 +7,27 @@ use App\Core\Pin\PinFormat;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Mailbox\LoginRequest;
 use App\Models\Address;
+use App\Services\MailboxSession;
 use App\Support\Clock;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class LoginController extends Controller
 {
     private static ?string $dummyHash = null;
+
+    public function create(Request $request): View|RedirectResponse
+    {
+        if (MailboxSession::address($request) !== null) {
+            return redirect()->route('mailbox.inbox');
+        }
+
+        return view('mailbox.login');
+    }
 
     public function store(LoginRequest $request, RateLimiter $limiter): RedirectResponse
     {
@@ -74,9 +85,9 @@ class LoginController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
-        $request->session()->forget(['mailbox.address_id', 'mailbox.fingerprint']);
+        MailboxSession::forget($request);
 
-        return redirect()->route('home');
+        return redirect()->route('mailbox.login.form');
     }
 
     /**

@@ -17,4 +17,12 @@ return [
     'save' => 'Save',
     'delete' => 'Delete',
     'back' => 'Back',
+
+    'to_home' => 'Back to the start page',
+    'role_student' => 'For students',
+    'role_teacher' => 'For teachers',
+    'switch_to_teacher_prompt' => 'Are you a teacher and want to manage addresses?',
+    'switch_to_teacher' => 'To the teacher login',
+    'switch_to_student_prompt' => 'Did you get an address and a PIN?',
+    'switch_to_student' => 'To the student mailbox',
 ];

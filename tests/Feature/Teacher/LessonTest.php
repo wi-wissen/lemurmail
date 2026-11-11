@@ -125,7 +125,7 @@ it('ends a lesson at once: PINs invalid, plaintext gone, student sessions end', 
     expect($address->fresh()->pinIsValid(Clock::now()))->toBeFalse()->and($address->fresh()->pin_encrypted)->toBeNull();
     expect($g->fresh()->window()->isActive(Clock::now()))->toBeFalse();
     auth()->logout();
-    $this->get(route('mailbox.inbox'))->assertRedirect(route('home'));
+    $this->get(route('mailbox.inbox'))->assertRedirect(route('mailbox.login.form'));
 });
 
 it('regenerates all PINs during a running lesson, keeping the expiry', function () {
