@@ -300,8 +300,7 @@ it('renews long lesson PINs when a new lesson starts', function () {
 
 it('marks an own PIN only in the address list, the beamer shows it like any other', function () {
     [, $g, $own] = ownPinSetup($this);
-    $marker = __('teacher.addresses.own_pin', ['until' => '']);
-    $marker = trim(explode('·', $marker)[0]);
+    $marker = __('teacher.addresses.own_pin', ['until' => TimeLabel::until($own->pin_expires_at, Clock::now())]);
 
     $this->get(route('groups.show', $g))->assertOk()->assertSeeText($marker);
     $this->get(route('groups.beamer', $g))->assertOk()
